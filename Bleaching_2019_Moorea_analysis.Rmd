@@ -303,22 +303,22 @@ df_plot_temp$Depth=factor(df_plot_temp$Depth,levels=c("10","20","30","40"),label
 
 
 kruskal.test(dhw_max$dhw_max~factor(dhw_max$Depth)) #signif
-#library(dunn.test)
+library(dunn.test)
 dunn_dhw=data.frame(dunn.test(dhw_max$dhw_max, factor(dhw_max$Depth), method = "bh")) #20 =/ 40 ; 10 =/40 ; 10 /= 30
 
 dunn_result=dunn.test(dhw_max$dhw_max, factor(dhw_max$Depth), method = "bh",list=T)
 names(dunn_result$P.adjusted)=gsub(" - ", "-", dunn_result$comparisons)
-#library(multcompView)
+library(multcompView)
 letters=multcompLetters(dunn_result$P.adjusted)$Letters
 
-writexl::write_xlsx(dunn_dhw,"~/Documents/PhD/Bleaching 2019/Results/Moorea/Temperature/Dunn_DHW.xlsx")
+#writexl::write_xlsx(dunn_dhw,"~/Documents/PhD/Bleaching 2019/Results/Moorea/Temperature/Dunn_DHW.xlsx")
 
 kruskal.test(nmdtf_df$nMDTF~factor(nmdtf_df$Depth)) #signif
 dunn_mdtf=data.frame(dunn.test(nmdtf_df$nMDTF, factor(nmdtf_df$Depth), method = "bh")) #20 =/ 40 ; 10 =/40 ; 10 /= 30
 dunn_result=dunn.test(nmdtf_df$nMDTF, factor(nmdtf_df$Depth), method = "bh",list=T)
 names(dunn_result$P.adjusted)=gsub(" - ", "-", dunn_result$comparisons)
 letters2=multcompLetters(dunn_result$P.adjusted)$Letters
-writexl::write_xlsx(dunn_mdtf,"~/Documents/PhD/Bleaching 2019/Results/Moorea/Temperature/Dunn_MDTF.xlsx")
+#writexl::write_xlsx(dunn_mdtf,"~/Documents/PhD/Bleaching 2019/Results/Moorea/Temperature/Dunn_MDTF.xlsx")
 
 
 lettres=data.frame(letters)
@@ -338,10 +338,10 @@ ggarrange(ggplot(df_plot_temp%>%filter(Variable=="AHS")) +
   scale_x_continuous(expand = c(0.000, 0.000)) +#limits = c(0, 100)
   #scale_y_discrete(expand = c(0, 0)) +
      geom_text(data=lettres,
-    aes(x = 5.05, y = fct_rev(factor(Depth)), label = letters),
+    aes(x = 5.1, y = fct_rev(factor(Depth)), label = letters),
     inherit.aes = FALSE,
     hjust = 0,
-    size = 2.5
+    size = 3
   ) +
   coord_cartesian(clip = "off",xlim=c(0,5)) +  # ← autorise l’affichage en dehors du panel
   scale_fill_manual(values=rev(c("#5C4D7D","darkmagenta","#3A4CC0", "skyblue1"))) +
@@ -350,27 +350,27 @@ ggarrange(ggplot(df_plot_temp%>%filter(Variable=="AHS")) +
   theme(
     strip.background = element_blank(),
     strip.placement = "outside",
-    strip.text.y.left = element_text( size = 9, angle = 0, hjust = 1),
+    strip.text.y.left = element_text( size = 10, angle = 0, hjust = 1),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.border = element_rect(color = "black", size = 0.4),
     axis.ticks = element_line(size=0.4),
-    axis.text.x = element_text(size = 8),
-    axis.text.y = element_text(size = 8),
+    axis.text.x = element_text(size = 8.5),
+    axis.text.y = element_text(size = 9),
     axis.title.x = element_text(size=9),
     legend.position = "none",plot.margin = margin(5, 40, 5, 5)
   ) +
-  labs(x = '', y = ""),
+  labs(x = '(°C weeks)', y = ""),
   ggplot(df_plot_temp%>%filter(Variable=="MDTF")) +
   facet_grid(rows = vars(factor(Variable)), switch = "y",scales="free_x") +
   geom_boxplot(aes(x = Value, y = fct_rev(Depth),fill=Depth,color=Depth),alpha=0.3,staplewidth = 0.3,outliers=F)+
   geom_jitter(aes(x = Value, y = fct_rev(Depth),color=Depth),alpha=0.3,size=1,width=0.1)+
   scale_x_continuous(expand = c(0.000, 0.000)) +#limits = c(0, 100)
       geom_text(data=lettres2,
-    aes(x = 2.525, y = fct_rev(factor(Depth)), label = letters),
+    aes(x = 2.55, y = fct_rev(factor(Depth)), label = letters),
     inherit.aes = FALSE,
     hjust = 0,
-    size = 2.5
+    size = 3
   ) +
   coord_cartesian(clip = "off",xlim=c(0,2.5)) +  # ← autorise l’affichage en dehors du panel
   #scale_y_discrete(expand = c(0, 0)) +
@@ -380,19 +380,19 @@ ggarrange(ggplot(df_plot_temp%>%filter(Variable=="AHS")) +
   theme(
     strip.background = element_blank(),
     strip.placement = "outside",
-    strip.text.y.left = element_text( size = 9, angle = 0, hjust = 1),
+    strip.text.y.left = element_text( size = 10, angle = 0, hjust = 1),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.border = element_rect(color = "black", size = 0.4),
     axis.ticks = element_line(size=0.4),
-    axis.text.x = element_text(size = 8),
-    axis.text.y = element_text(size = 8),
+    axis.text.x = element_text(size = 8.5),
+    axis.text.y = element_text(size = 9),
     axis.title.x = element_text(size=9),
     legend.position = "none",plot.margin = margin(5, 40, 5, 5)
   ) +
-  labs(x = '', y = ""),nrow=2,align="hv")
+  labs(x = '(°C)', y = ""),nrow=2,align="hv")
 
-ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Temperature/DHW_MDTF_LTER.pdf",width = 6, height = 3)
+ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Temperature/DHW_MDTF_LTER_goodone.pdf",width = 5.5, height = 3)
 ```
 
 
@@ -593,7 +593,7 @@ dhw_daily=sst %>%
   group_by(Site)%>%
   mutate(
     hot_spot = ifelse(SST-mmm >= 0, SST-mmm, 0),
-    dhw = rollapply(hotspot, width = 84, FUN = function(x) sum(x)/7, align = "right", fill = NA),
+    dhw = rollapply(hot_spot, width = 84, FUN = function(x) sum(x)/7, align = "right", fill = NA),
     dhw = replace_na(dhw, 0)
   )
 
@@ -641,51 +641,6 @@ for (site in c("Haapiti","Gendron","E2B","Temae","Afareitu","Maatea")){
   #rescaledVals=calc_fudge_axis(sst_df$SST, y2 = sst_df$DHW)
   sst_df=sst_df%>%mutate(DHW_scaled=rescaledVals$yf)
   
-  library(grid)
-
-color_second_y="darkorange"
-sst_df$DHW_bis=sst_df$DHW+0.001
-plot=ggplot(data=sst_df)+
-  geom_segment(aes(xend=Date,x=Date, yend=0,y=DHW_scaled, colour = DHW_bis),size = 1,alpha=0.9) +
-  geom_line(aes(x=Date, y=DHW_scaled),color="white",size=2)+
-  
-    #ggforce::geom_link2(aes(x = Date, y=DHW_scaled,color=DHW),linejoin="round",lineend="round",size=1)+
-    scale_color_viridis_c(option = "plasma",begin=0,end=0.8,direction=1)+
-    #geom_ribbon(aes(x=Date,ymin=0,ymax=DHW_scaled,group=1),alpha=0.4,fill="orange")+
-    #geom_ribbon(aes(x=Date,ymin=0,ymax=DHW_scaled),fill=grad_ungroup,alpha=0.4)+
-    #geom_col(aes(x=Date,y=DHW_scaled,fill = DHW_scaled),color=NA) +
-    #scale_color_gradient2(position="bottom" , low = "darkmagenta", mid =muted("purple"), high = "orange",midpoint = 1.5)+
-    new_scale_fill()+
-    geom_line(aes(x=Date,y=SST),color="black",position="identity",alpha=0.8)+
-    annotate("segment",y=mean(sst_df$mmm),yend=mean(sst_df$mmm),x=min(sst_df$Date),xend=max(sst_df$Date),color="red",alpha=0.8,linetype="dashed")+
-    #annotate("text",x = min(sst_df$Date)+days(5), y = mean(sst_df$mmm), label = paste("BT = ",mean(sst_df$mmm),"°C",sep=""), color = "red", vjust = -0.5, hjust = 0,size=3)+
-    theme_classic()+
-    scale_x_date(expand=c(0,0),date_breaks="2 months",date_labels="%b")+
-    labs(y = "SST CRW temperature (°C)",x='',title=site,fill="DHW")+
-    scale_y_continuous(limits=c(25,31.5),oob = scales::rescale_none,expand=c(0,0),
-      sec.axis = dup_axis(breaks = rescaledVals$breaks, labels = rescaledVals$labels, name = "DHW (°C weeks)"))+ #rescaledVals$breaks
-  theme(axis.title.y.left=element_text(size=9),axis.ticks.y.right = element_line(color=color_second_y),
-        axis.text.y.right = element_text(color=color_second_y),
-        text=element_text(family="sans"),
-        axis.line.y.right = element_line(color=color_second_y),
-        axis.title.y.right = element_text(color=color_second_y,size=9),
-        plot.title=element_text(face="italic"),
-        legend.position="none",
-        plot.margin=margin(10,10,10,10))
-
-plot_list=append(plot_list,list(plot))
-}
-ggarrange(plotlist=plot_list,labels=LETTERS[1:6],ncol=3,nrow=2,align='hv')
-ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Temperature/SST_DHW_arranged_goodone.pdf",width =12, height = 5)
-
-### Version 2 sans labels 
-plot_list=list()
-for (site in c("Haapiti","Gendron","E2B","Temae","Afareitu","Maatea")){
-  sst_df=sst%>%filter(Site==site)
-  rescaledVals=calc_fudge_axis(sst_df$SST, sst_df$DHW, fixed_ylim2 = common_ylim2)
-  #rescaledVals=calc_fudge_axis(sst_df$SST, y2 = sst_df$DHW)
-  sst_df=sst_df%>%mutate(DHW_scaled=rescaledVals$yf)
-  
   
 
 color_second_y="darkorange"
@@ -720,7 +675,7 @@ plot=ggplot(data=sst_df)+
 
 plot_list=append(plot_list,list(plot))
 }
-dhw1_v2=ggarrange(plotlist=plot_list,labels=c("Haapiti","Gendron","E2B","Temae","Afareitu","Maatea"),ncol=3,nrow=2,align='hv',font.label = list(size=11))
+dhw1_v2=ggarrange(plotlist=plot_list,labels=c("Haapiti","Gendron","E2B","Temae","Afareitu","Maatea"),ncol=3,nrow=2,align='hv',font.label = list(size=11,face="italic"))
 dhw1_v2
 ```
 
@@ -758,53 +713,6 @@ showtext::showtext_opts(dpi = 300)
 dhw_daily$Date=as.Date(dhw_daily$Date)
 dhw_daily$DHW=dhw_daily$dhw
 
-
-plot_list=list()
-for (site in c("Haapiti","Gendron","E2B","Temae","Afareitu","Maatea")){
-  sst_df=dhw_daily%>%filter(Site==site)
-  rescaledVals=calc_fudge_axis(sst_df$SST, sst_df$DHW, fixed_ylim2 = common_ylim2)
-  #rescaledVals=calc_fudge_axis(sst_df$SST, y2 = sst_df$DHW)
-  sst_df=sst_df%>%mutate(DHW_scaled=rescaledVals$yf)
-  
-  library(grid)
-
-color_second_y="darkorange"
-sst_df$DHW_bis=sst_df$DHW+0.001
-plot=ggplot(data=sst_df)+
-  geom_segment(aes(xend=Date,x=Date, yend=0,y=DHW_scaled, colour = DHW_bis),size = 1,alpha=0.9) +
-  geom_line(aes(x=Date, y=DHW_scaled),color="white",size=2)+
-  
-    #ggforce::geom_link2(aes(x = Date, y=DHW_scaled,color=DHW),linejoin="round",lineend="round",size=1)+
-    scale_color_viridis_c(option = "plasma",begin=0,end=0.8,direction=1)+
-    #geom_ribbon(aes(x=Date,ymin=0,ymax=DHW_scaled,group=1),alpha=0.4,fill="orange")+
-    #geom_ribbon(aes(x=Date,ymin=0,ymax=DHW_scaled),fill=grad_ungroup,alpha=0.4)+
-    #geom_col(aes(x=Date,y=DHW_scaled,fill = DHW_scaled),color=NA) +
-    #scale_color_gradient2(position="bottom" , low = "darkmagenta", mid =muted("purple"), high = "orange",midpoint = 1.5)+
-    new_scale_fill()+
-    geom_line(aes(x=Date,y=SST),color="black",position="identity",alpha=0.8)+
-    annotate("segment",y=mean(sst_df$mmm),yend=mean(sst_df$mmm),x=min(sst_df$Date),xend=max(sst_df$Date),color="red",alpha=0.8,linetype="dashed")+
-    #annotate("text",x = min(sst_df$Date)+days(5), y = mean(sst_df$mmm), label = paste("BT = ",mean(sst_df$mmm),"°C",sep=""), color = "red", vjust = -0.5, hjust = 0,size=3)+
-    theme_classic()+
-    scale_x_date(expand=c(0,0),date_breaks="2 months",date_labels="%b")+
-    labs(y = "SST CRW temperature (°C)",x='',title=site,fill="DHW")+
-    scale_y_continuous(limits=c(25,31.5),oob = scales::rescale_none,expand=c(0,0),
-      sec.axis = dup_axis(breaks = rescaledVals$breaks, labels = rescaledVals$labels, name = bquote(DHW["0°C"] ~ "(°C.weeks)")))+ #rescaledVals$breaks
-  theme(axis.title.y.left=element_text(size=9),axis.ticks.y.right = element_line(color=color_second_y),
-        axis.text.y.right = element_text(color=color_second_y),
-        text=element_text(family="sans"),
-        axis.line.y.right = element_line(color=color_second_y),
-        axis.title.y.right = element_text(color=color_second_y,size=9),
-        plot.title=element_text(face="italic"),
-        legend.position="none",
-        plot.margin=margin(10,10,10,10))
-
-plot_list=append(plot_list,list(plot))
-}
-ggarrange(plotlist=plot_list,labels=LETTERS[1:6],ncol=3,nrow=2,align='hv')
-ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Temperature/SST_DHW0°C_arranged_goodone.pdf",width =12, height = 5)
-
-
-### Version 2 sans labels 
 plot_list=list()
 for (site in c("Haapiti","Gendron","E2B","Temae","Afareitu","Maatea")){
   sst_df=dhw_daily%>%filter(Site==site)
@@ -846,11 +754,11 @@ plot=ggplot(data=sst_df)+
 
 plot_list=append(plot_list,list(plot))
 }
-dhw0_v2=ggarrange(plotlist=plot_list,labels=c("Haapiti","Gendron","E2B","Temae","Afareitu","Maatea"),ncol=3,nrow=2,align='hv',font.label = list(size=11))
+dhw0_v2=ggarrange(plotlist=plot_list,labels=c("Haapiti","Gendron","E2B","Temae","Afareitu","Maatea"),ncol=3,nrow=2,align='hv',font.label = list(size=11,face="italic"))
 dhw0_v2
 
-ggarrange(NULL,dhw1_v2,NULL,dhw0_v2,labels=c("A - DHW cutoff 1°C","","B - DHW cutoff 0°C",""),nrow=4,align="hv",heights=c(0.05,1,0.05,1),hjust=-0.05,font.label = list(color="grey30"))
-ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Temperature/Arranged_DHW1_DHW0_v2.pdf",width =11, height = 9)
+ggarrange(NULL,dhw1_v2,NULL,dhw0_v2,labels=c("a. DHW cutoff 1°C","","b. DHW cutoff 0°C",""),nrow=4,align="hv",heights=c(0.1,1,0.1,1),hjust=-0.05)
+ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Temperature/Arranged_DHW1_DHW0_v2_goodone.pdf",width =12, height = 10)
 ```
 
 
@@ -1569,141 +1477,6 @@ ggplot(overall_counts_site, aes(x = percent, y = fct_rev(depth), fill = status))
 ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Bleaching/Proportion_bleaching_bysite_depthv2.pdf",width = 5, height = 3)
 ```
 
-```{r Good version plot for Moorea map}
-library(forcats)
-
-
-
-plot_list=list()
-for (Site in unique(overall_counts_site$site)){
-df_plot=overall_counts_site%>%filter(site==Site)
-df_plot$site=factor(df_plot$site)
-
-labels_n=df_plot %>%
-  group_by(site, depth) %>%
-  dplyr::summarise(n = unique(total_n), .groups = "drop") %>%
-  mutate(
-    label = paste0("n = ", n),
-    depth = fct_rev(depth),
-    x = 101  # juste hors panel
-  )
-
-plot=ggplot(df_plot, aes(x = percent, y = fct_rev(depth), fill = status)) +
-  geom_col() +
-  geom_text(
-    data = labels_n,
-    aes(x = x, y = depth, label = label),
-    inherit.aes = FALSE,
-    hjust = 0,
-    size = 2.5
-  ) +
-  facet_grid(rows = vars(factor(site)), switch = "y") +
-  scale_x_continuous(expand = c(0, 0)) +#limits = c(0, 100)
-  scale_y_discrete(expand = c(0, 0)) +
-  coord_cartesian(clip = "off",expand=F,xlim=c(0,100)) +  # ← autorise l’affichage en dehors du panel
-  scale_fill_manual(
-    name = "Status",
-    values = c("thistle4", "thistle2", "snow2"),
-    drop = FALSE
-  ) +
-  theme_bw() +
-  theme(
-    strip.background = element_blank(),
-    strip.placement = "outside",
-    strip.text.y.left = element_text( size = 10, angle = 0, hjust = 1,face="bold"),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    panel.border = element_rect(color = "black", size = 0.4),
-    axis.ticks = element_line(size=0.4),
-    axis.text.x = element_text(size = 8),
-    axis.text.y = element_text(size = 8),
-    axis.title.x = element_text(size=8.5),
-    legend.position = "none",
-    legend.title = element_blank(),
-    legend.text = element_text(size = 8, margin = margin(t = 0,l=0.2, unit = "lines")), #l=0.2 space between key and legend
-    legend.key.size = unit(0.3, "cm"),
-    legend.spacing.y = unit(10, "pt"),
-    legend.spacing.x= unit(2,"cm"),
-    legend.margin = margin(0, 0, 0, 0),
-    legend.direction = "horizontal",
-    legend.justification = "center",
-    plot.margin = margin(5, 40, 5, 5)
-  ) +
-  labs(x = "Relative abundance (%)", y = "")
-plot_list=append(plot_list,list(plot))
-}
-
-ggarrange(plotlist=plot_list,nrow=6,align="hv")
-
-ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Bleaching/Proportion_bleaching_bysite_depth_for_map1.pdf",width = 4.7, height = 5.2)
-```
-
-```{r}
-plot_list=list()
-for (Site in unique(overall_counts_site$site)){
-df_plot=overall_counts_site%>%filter(site==Site)
-df_plot$site=factor(df_plot$site)
-
-labels_n=df_plot %>%
-  group_by(site, depth) %>%
-  dplyr::summarise(n = unique(total_n), .groups = "drop") %>%
-  mutate(
-    label = paste0("n = ", n),
-    depth = fct_rev(depth),
-    x = -5,hjust=1  # juste hors panel
-  )
-
-plot=ggplot(df_plot, aes(x = percent, y = fct_rev(depth), fill = status)) +
-  geom_col() +
-  geom_text(
-    data = labels_n,
-    aes(x = x, y = depth, label = label),
-    inherit.aes = FALSE,
-    hjust = 0,
-    size = 2.5
-  ) +
-  facet_grid(rows = vars(factor(site)), switch = "y") +
-  scale_x_continuous(expand = c(0, 0)) +#limits = c(0, 100)
-  scale_y_discrete(expand = c(0, 0),position="right") +
-  coord_cartesian(clip = "off",expand=F,xlim=c(0,100)) +  # ← autorise l’affichage en dehors du panel
-  scale_fill_manual(
-    name = "Status",
-    values = c("thistle4", "thistle2", "snow2"),
-    drop = FALSE
-  ) +
-  theme_bw() +
-  theme(
-    strip.background = element_blank(),
-    strip.placement = "outside",
-    strip.text.y.left = element_blank(),  # ← on masque le côté gauche
-strip.text.y.right = element_text(size = 9, angle = 0, hjust = 0, face = "bold"),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    panel.border = element_rect(color = "black", size = 0.4),
-     axis.text.y.right = element_text(size = 8),
-  axis.ticks.y.right = element_line(size = 0.4),
-  axis.title.y.right = element_text(size = 10),
-  axis.text.y.left = element_blank(),
-  axis.ticks.y.left = element_blank(),
-  axis.title.y.left = element_blank(),
-    legend.position = "top",
-    legend.title = element_blank(),
-    legend.text = element_text(size = 8, margin = margin(t = 0,l=0.2, unit = "lines")), #l=0.2 space between key and legend
-    legend.key.size = unit(0.3, "cm"),
-    legend.spacing.y = unit(10, "pt"),
-    legend.spacing.x= unit(2,"cm"),
-    legend.margin = margin(0, 0, 0, 0),
-    legend.direction = "horizontal",
-    legend.justification = "center",
-    plot.margin = margin(5, 5, 5, 40)
-  ) +
-  labs(x = "Relative abundance (%)", y = "")
-plot_list=append(plot_list,list(plot))
-}
-ggarrange(plotlist=plot_list,nrow=6,align="hv")
-
-ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Bleaching/Proportion_bleaching_bysite_depth_for_map2.pdf",width = 5, height = 7)
-```
 
 #### Per quadrat
 ```{r Counts PER QUADRAT}
@@ -1787,50 +1560,6 @@ not_bleached_genus=setdiff(unique(overall_counts_genus$genus),ascending_bleachin
 overall_counts_genus$genus=factor(overall_counts_genus$genus,levels=c(overall_genus$genus,not_bleached_genus))
 ```
 
-```{r Plot % genus bleached - pooled depth}
-round2 = function(x, digits) {
-  posneg = sign(x)
-  z = abs(x)*10^digits
-  z = z + 0.5 + sqrt(.Machine$double.eps)
-  z = trunc(z)
-  z = z/10^digits
-  z*posneg
-}
-
-
-ggplot(overall_counts_genus, aes(x = genus_label, y = percent, fill = status)) +
-  geom_bar(stat = "identity", alpha = 0.7) +
-  labs(
-    title = "",
-    x = "",
-    y = "Relative abundance (%)"
-  ) +
-  theme_bw() +
-  scale_y_continuous(expand = c(0.003, 0.003)) +
-  theme(
-    panel.border = element_rect(size = 1),
-    plot.title = element_text(face = "bold"),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    plot.margin = margin(10, 10, 10, 10),
-    text = element_text(family = "sans"),
-    #axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
-    axis.text.x = element_markdown(angle = 90, hjust = 1, vjust = 0.5),
-    legend.title = element_text(size = 9),
-    legend.text = element_text(size = 7, margin = margin(t = 0, unit = "lines")),
-    legend.key.size = unit(0.3, "cm"),
-    legend.spacing.y = unit(0, "pt"),
-    legend.margin = margin(0, 0, 0, 0),
-    legend.direction = "horizontal",
-    legend.position = "top",
-    legend.justification.top = c(-0.02, 0.6)
-  ) +
-  scale_fill_manual(name = "Status", values = c("thistle4", "thistle2", "snow2"), drop = FALSE)
-ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Bleaching/Bleaching_genus_pooleddepth.pdf",width =6, height = 4.5)
-
-
-```
-
 ```{r Counts by depth}
 #library(plyr)
 overall_counts_genus_depth=ddply(bleaching,~status+genus+depth,function(x){c(n=sum(x$n))})
@@ -1900,79 +1629,6 @@ round2 = function(x, digits) {
   z*posneg
 }
 
-plot_pooled_depth=ggplot(overall_counts_genus, aes(x = genus_label, y = percent, fill = status)) +
-  geom_bar(stat = "identity", alpha = 0.7) +
-  labs(
-    title = "Pooled depth",
-    x = "",
-    y = "Relative abundance (%)"
-  ) +
-  theme_bw() +
-  scale_y_continuous(expand = c(0.003, 0.002)) +
-  theme(
-    panel.border = element_rect(size = 1),
-    plot.title = element_text(face = "bold"),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    plot.margin = margin(10, 10, 10, 10),
-    text = element_text(family = "sans"),
-    #axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
-    axis.text.x = element_markdown(angle = 90, hjust = 1, vjust = 0.5),
-    legend.title = element_text(size = 9),
-    legend.text = element_text(size = 7, margin = margin(t = 0, unit = "lines")),
-    legend.key.size = unit(0.3, "cm"),
-    legend.spacing.y = unit(0, "pt"),
-    legend.margin = margin(0, 0, 0, 0),
-    legend.direction = "horizontal",
-    legend.position = "top",
-    legend.justification.top = c(-0.02, 0.6)
-  ) +
-  scale_fill_manual(name = "Status", values = c("thistle4", "thistle2", "snow2"), drop = FALSE)
-
-plot_genus_susceptibility_depth=list(plot_pooled_depth)
-for (depth in c("5m","12m","20m")){
-  df=overall_counts_genus_depth_full[overall_counts_genus_depth_full$depth==depth,]
-
-  
-  plot=ggplot(df, aes(x = genus_label, y = percent, fill = status)) +
-  geom_bar(stat = "identity", alpha = 0.7) +
-  labs(
-    title = depth,
-    x = "",
-    y = "Relative abundance (%)"
-  ) +
-  theme_bw() +
-  scale_y_continuous(expand = c(0.003, 0.002)) +
-  theme(
-    panel.border = element_rect(size = 1),
-    plot.title = element_text(face = "bold"),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    plot.margin = margin(10, 10, 10, 10),
-    text = element_text(family = "sans"),
-    #axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
-    axis.text.x = element_markdown(angle = 90, hjust = 1, vjust = 0.5),
-    legend.title = element_text(size = 9),
-    legend.text = element_text(size = 7, margin = margin(t = 0, unit = "lines")),
-    legend.key.size = unit(0.3, "cm"),
-    legend.spacing.y = unit(0, "pt"),
-    legend.margin = margin(0, 0, 0, 0),
-    legend.direction = "horizontal",
-    legend.position = "top",
-    legend.justification.top = c(-0.02, 0.6)
-  ) +
-  scale_fill_manual(name = "Status", values = c("thistle4", "thistle2", "snow2"), drop = FALSE)
-  
-  plot_genus_susceptibility_depth=append(plot_genus_susceptibility_depth,list(plot))
-}
-
-ggarrange(plotlist=plot_genus_susceptibility_depth,labels=c("A","B","C","D"),nrow=2,ncol=2,align='hv')
-ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Bleaching/Bleaching_genus_by_depth.pdf",width =12, height = 8)
-
-
-```
-
-```{r Good version plot}
 library(forcats)
 labels_n=overall_counts_genus_depth_full %>%
   group_by(genus, depth) %>%
@@ -2060,6 +1716,7 @@ table_counts=bleaching_summary %>%
 writexl::write_xlsx(table_counts,"~/Documents/PhD/Bleaching 2019/Results/Moorea/Counts_colonies_per_genus_bleaching_dataset_per_depth.xlsx")
 ```
 
+### Assemblage
 ```{r Genus as random effect - community scale}
 ggplot(bleaching_long,aes(x=depth2,y=Bleached))+geom_point()
 
@@ -2100,87 +1757,153 @@ predictions=ggeffects::ggemmeans(mod_bleaching1, terms = c("depth"),bias_correct
 colnames(predictions)[1]="Depth"
 predictions$Depth=factor(predictions$Depth,levels=c("5m","12m","20m"))
 
-#####
-predictions%>% 
-          ggplot(aes(x = Depth, y = predicted,color=Depth)) +   
-            geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width=0.15, size = 0.5,position=position_dodge(.7),alpha=0.9,show.legend=F) +
-            geom_bar(aes(fill=Depth),alpha=0.3,position=position_dodge(.7),stat="identity",width=0.7,color=NA)+
-            scale_color_manual(values = rev(c("#09283CFF", "mediumpurple1","skyblue1"))) +
-            scale_fill_manual(values = rev(c("#09283CFF", "mediumpurple1","skyblue1")))+
-            theme_classic()+
-            scale_y_continuous(expand=c(0,0),limits=c(0,1.01))+
-            scale_x_discrete(expand=c(0.2,0.2))+
-            labs(y="Probability of bleaching")+
-            theme(axis.title.x=element_blank(),legend.position="none",plot.title=element_text(face="italic",size=12,hjust=-0.03),legend.title=element_blank(),legend.text = element_text(size = 7,margin = margin(t = 0, unit = "lines")),legend.background=element_blank(),legend.key.size = unit(0.3, "cm"),legend.spacing.y = unit(0, "pt"),legend.margin = margin(0, 0, 0, 0))
-
-#####
-predictions$depth=factor(predictions$Depth,levels=c("5m","12m","20m"),labels=c(5,12,20))
-predictions$depth=as.numeric(as.character(predictions$depth))
-
-bleaching_proportion=bleaching_long %>%
-  group_by(site, quadrat, depth) %>%
-  dplyr::summarise(
-    n_bleached = sum(n[Bleached == 1], na.rm = TRUE),
-    n_total = sum(n, na.rm = TRUE),
-    prop_bleached = n_bleached / n_total
-  ) %>%
-  ungroup()
-bleaching_proportion$Depth=factor(bleaching_proportion$depth,levels=c("5m","12m","20m"),labels=c(5,12,20))
-bleaching_proportion$Depth=as.numeric(as.character(bleaching_proportion$Depth))
+predictions$depth=factor(predictions$Depth,levels=rev(c("5m","12m","20m")))
+predictions$Genus="Assemblage"
 
 ggplot() +
-  geom_jitter(data = bleaching_proportion,aes(y = Depth, x = prop_bleached, color = depth, fill = depth),size = 2, alpha = 0.1, height = 1) +
-  geom_errorbarh(data = predictions,aes(y = depth, x = predicted, xmin = conf.low, xmax = conf.high,color=Depth),height = 0.8,size = 1,show.legend =FALSE,width=0.2,height=c(0.4,0.4,0.4)) +
-  #geom_errorbarh(data = predictions,aes(y = depth, x = predicted, xmin = conf.low,xmax=conf.high,group=1),height = 0.4, size = 1, show.legend = FALSE,width=0.2,height=0.4,color="black") +
-  geom_point(data = predictions,aes(y = depth, x = predicted, color = Depth),shape = 21, fill = "white", stroke = 2, size = 2) +
-  #geom_point(data = predictions,aes(y = depth, x = predicted),shape = 21, fill = "white", stroke = 2, size = 2,color="black") +
-  #scale_color_manual(values = rev(c("#09283CFF", "mediumpurple1", "skyblue1"))) +
-  #scale_fill_manual(values = rev(c("#09283CFF", "mediumpurple1", "skyblue1"))) +
-  
-  scale_color_manual(
-  values = c("5m" = "skyblue1", "12m" = "#259FAF", "20m" = "#044553")
-) +
-scale_fill_manual(
-  values = c("5m" = "skyblue1", "12m" = "#259FAF", "20m" = "#044553")
-)+
-  
-  theme_classic() +
-  scale_x_continuous(expand = c(0, 0), limits = c(0, 1.02),position="top") +
-  scale_y_reverse(breaks = c(2,5, 12, 20), limits = c(22, 2),expand=c(0,0)) +  # ← profondeur inversée
-  labs(x = "Proportion bleaching", y = "Depth (m)") +
-  theme(axis.title.y = element_text(size = 9),
-    axis.title.x = element_text(size = 9),
-    legend.position = "none", axis.text=element_text(size=8),
-    plot.margin = margin(5, 10, 10, 5)
-  )
-
-#ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Bleaching/Binomial/Predictions_genus_random_pale_as_bleached3.pdf",width =5, height = 2.7) 
-ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Bleaching/Binomial/Predictions_genus_random_pale_as_bleached3.pdf",width =4, height = 2) 
-
-
-#####
-predictions$depth=factor(predictions$Depth,levels=c("5m","12m","20m"),labels=c("5","12","20"))
-bleaching_proportion$Depth=factor(bleaching_proportion$depth,levels=c("5m","12m","20m"),labels=c("5","12","20"))
-predictions$depth=factor(predictions$depth,levels=c("20","12","5"))
-bleaching_proportion$Depth=factor(bleaching_proportion$Depth,levels=c("20","12","5"))
-
-ggplot() +
-  geom_jitter(data = bleaching_proportion,aes(y = Depth, x = prop_bleached, color=Depth),size = 1, alpha = 0.05, height = 0.2) +
-  geom_errorbar(data = predictions,aes(y = depth, x = predicted, xmin = conf.low, xmax = conf.high,color=depth),size = 0.7,show.legend =FALSE,width=0.2) +
-  geom_col(data = predictions,aes(y = depth, x = predicted, fill = depth),stat="identity",width = 0.7,color = NA,alpha=0.2) +
+  geom_errorbar(data = predictions,aes(y = depth, x = predicted, xmin = conf.low, xmax = conf.high,color=depth),size = 0.5,show.legend =FALSE,width=0.25) +
+  geom_col(data = predictions,aes(y = depth, x = predicted, fill = depth),color = NA,alpha=0.2)+#,width=0.84) +
+  #scale_color_manual(values = rev(c("skyblue1", "#259FAF", "#044553"))) +
+  #scale_fill_manual(values = rev(c("skyblue1", "#259FAF", "#044553"))) +
    scale_color_manual(values = c("#09283CFF", "mediumpurple2","skyblue1")) +
    scale_fill_manual(values = c("#09283CFF", "mediumpurple2","skyblue1"))+
   theme_classic() +
-  scale_x_continuous(expand = c(0, 0), limits = c(0, 1.02),position="top") +
+  scale_x_continuous(expand = c(0.001, 0.001), limits = c(0, 1),position="top") +
   #scale_y_reverse(breaks = c(2,5, 12, 20), limits = c(22, 2),expand=c(0,0)) +  # ← profondeur inversée
-  labs(x = "Proportion bleaching", y = "Depth (m)") +
-  theme(axis.title.x = element_text(size = 9),
-    axis.title.y = element_text(size = 9),
-    legend.position = "none", axis.text=element_text(size=8)
-  )
-ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Bleaching/Binomial/Predictions_genus_random_pale_as_bleached3.pdf",width =3.5, height = 2) 
+  labs(x = "Proportion bleaching", y = "") +
+  facet_grid(rows = vars(factor(Genus)), switch = "y") +
+  scale_y_discrete(expand = c(0, 0)) +
+  #scale_y_discrete(expand = c(0.22, 0.22)) +
+  theme_bw() +
+  theme(
+    strip.background = element_blank(),
+    strip.placement = "outside",
+    strip.text.y.left = element_text( size = 9, angle = 0, hjust = 1,face="italic"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_rect(color = "grey30", size = 0.7),
+    axis.ticks = element_line(size=0.4),
+    axis.text.x = element_text(size = 8),
+    axis.text.y = element_text(size = 8),
+    axis.title.x = element_text(size=9),
+    legend.position = "none",
+    legend.title = element_blank(),
+    legend.text = element_text(size = 8, margin = margin(t = 0,l=0.2, unit = "lines")), #l=0.2 space between key and legend
+    legend.key.size = unit(0.3, "cm"),
+    legend.spacing.y = unit(10, "pt"),
+    legend.spacing.x= unit(2,"cm"),
+    legend.margin = margin(0, 0, 0, 0),
+    legend.direction = "horizontal",
+    legend.justification = "center",
+    plot.margin = margin(5, 15, 5, 5)
+  ) 
+ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Bleaching/Binomial/Predictions_genus_random_pale_as_bleached_goodone.pdf",width =4.3, height = 1)
 ```
 
+```{r Plot contrasts model - assemblage - differences by depth}
+emm=emmeans(mod_bleaching1,pairwise~depth,type="response",adjust="tukey",bias.adjust=T,sigma=total_sd)
+matrix_contrasts_all=pwpm(regrid(emm,bias.adjust=T,sigma=total_sd), means = FALSE,adjust="tukey",bias.adjust=T,sigma=total_sd) #regrid(emm,bias.adjust=T,sigma=total_sd)
+matrix_contrasts_all_pval=pwpm(emm, means = FALSE,adjust="tukey",bias.adjust=T,sigma=total_sd) #regrid(emm,bias.adjust=T,sigma=total_sd)
+
+depths=c("5m", "12m", "20m")
+
+
+    matrix_contrasts=matrix_contrasts_all
+    matrix_contrasts=as.matrix(matrix_contrasts)
+    
+    matrix_contrasts_pval=matrix_contrasts_all_pval
+    matrix_contrasts_pval=as.matrix(matrix_contrasts_pval)
+
+
+    #For differences
+    matrix_contrasts=sub("[<>]", "", matrix_contrasts)
+    p.matx=matrix(as.numeric(matrix_contrasts), nrow = length(matrix_contrasts[, 1]), ncol = length(matrix_contrasts[, 1]))
+    rownames(p.matx)=colnames(p.matx)=colnames(matrix_contrasts)
+
+    differences=p.matx
+    differences[upper.tri(differences, diag = FALSE)]=NA
+    p.matx[lower.tri(p.matx, diag = FALSE)]=NA
+
+    long_differences=as.data.frame(differences, check.names = FALSE) %>%
+          rownames_to_column(var = "rowname") %>%
+          gather(rowname2, value, -rowname) %>%
+          na.omit()
+    
+    
+    #For p-values
+    matrix_contrasts=sub("[<>]", "", matrix_contrasts_pval)
+    p.matx_pval=matrix(as.numeric(matrix_contrasts), nrow = length(matrix_contrasts[, 1]), ncol = length(matrix_contrasts[, 1]))
+    rownames(p.matx_pval)=colnames(p.matx_pval)=colnames(matrix_contrasts)
+
+
+    p.matx_pval[lower.tri(p.matx_pval, diag = FALSE)]=NA
+
+   
+    long_p_values=as.data.frame(p.matx_pval, check.names = FALSE) %>%
+          rownames_to_column(var = "rowname") %>%
+          gather(rowname2, value, -rowname) %>%
+          na.omit()
+    colnames(long_p_values)=c("rowname2","rowname","value")
+    long_p_values=long_p_values%>%relocate(rowname)
+
+    df_contrasts=merge(long_differences,long_p_values,by=c("rowname","rowname2"))
+  
+  colnames(df_contrasts)=c("Depth1","Depth2","Differences","p_values")
+  df_contrasts$Differences_signif=df_contrasts$Differences
+  df_contrasts$Differences_signif[df_contrasts$p_values>0.05]=0
+
+  
+  df_contrasts2=df_contrasts
+  colnames(df_contrasts2)=c("Depth2","Depth1","Differences","p_values","Differences_signif")
+  df_contrasts2=df_contrasts2%>%relocate(Depth1)
+  df_contrasts$is_upper=TRUE
+  df_contrasts$is_diag=FALSE
+  df_contrasts2$is_upper=FALSE
+  df_contrasts2$is_diag=FALSE
+  combined=rbind(df_contrasts,df_contrasts2)
+  
+   
+    diag_data <-data.frame(Depth1=depths,Depth2=depths,Differences=NA,p_values=NA,Differences_signif=NA,is_upper=FALSE,is_diag=TRUE)
+
+  combined=rbind(combined, diag_data)
+  
+ 
+  combined$Depth1=factor(combined$Depth1,levels=c("20m","12m","5m"))
+  combined$Depth2=factor(combined$Depth2,levels=c("20m","12m","5m"))
+  combined$p_values_text=combined$p_values
+  #combined=combined%>%mutate(p_values_text = ifelse(p_values_text > 0.0001, round(p_values_text, 4), "< 1e-4"))
+  #combined$Differences=-1*combined$Differences #comme ça différence de axe y - axe x
+  #combined$Differences_signif=-1*combined$Differences_signif #comme ça différence de axe y - axe x
+  
+plot=combined %>%
+    mutate(is_upper = as.numeric(Depth2) < as.numeric(Depth1)) %>%
+    mutate(is_diag = as.numeric(Depth2) == as.numeric(Depth1)) %>%
+    ggplot(aes(Depth1, Depth2)) +
+    geom_tile(aes(fill = ifelse(is_upper, 0, Differences_signif)), colour = NA) +
+    geom_tile(aes(alpha = ifelse(is_diag, 1, 0)), fill ="#DEDEDE") +
+    geom_tile(aes(alpha = ifelse(is_upper, 1, 0)), fill = "white",color=NA) +
+    #geom_text(aes(label = ifelse(is_upper, p_values_text, round(Differences,2)),fontface = ifelse(p_values<0.05, 2, 1)),size=3.5) +
+
+    geom_text(data = ~ .x %>% filter(is_upper), aes(label = p_values_text, fontface = ifelse(p_values_text < 0.05, 2, 1)),size = 3.2)+ #3
+ 
+    geom_text(data = ~ .x %>% filter(!is_upper & !is_diag),aes(label = round(Differences, 2),fontface = ifelse(p_values_text < 0.05, 2, 1)),size = 3.6) + #3.6
+    scale_fill_gradient2(name = "Differences", low = "darkmagenta", mid = "white", high = "darkorange", midpoint = 0, limits = c(-0.3, 0.3)) +
+    scale_alpha_identity() +
+    coord_equal(expand = FALSE)+
+    labs(x = "",y = "",title=" ") +
+    theme_bw() +
+    theme(panel.border = element_rect(size = 1),
+    plot.title = element_text(face = "italic",size=10), legend.direction="horizontal", legend.position="none",
+    axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.5),                       
+    axis.text.x.bottom = element_text(size=12),axis.text.y = element_text(size=12))#+theme(plot.margin = unit(c(0,0,0,0), "lines"))
+plot
+
+ggarrange(plot,labels="Assemblage",ncol=1,nrow=1,common.legend=T,legend="none",font.label=list(size=14,face="italic"),hjust=-0.2)
+ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Bleaching/Binomial/Emmeans_contrats_bleaching_tukey_differences_depth_goodone_ASSEMBLAGE.pdf",width = 2.25, height = 2.25)
+#ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Bleaching/Binomial/Emmeans_contrats_bleaching_tukey_differences_depth_goodone_vertical2.pdf",width = 5.5, height = 10)
+```
+
+### By genus
 ```{r By genus}
 bleaching_by_genus=bleaching_long%>%filter(genus %in% c("Pocillopora","Montipora","Acropora","Phymastrea","Pavona","Porites","Leptastrea","Millepora"))
 
@@ -2211,39 +1934,6 @@ colnames(predictions)[6]="Genus"
 predictions$Genus=factor(predictions$Genus,levels=c("Acropora","Phymastrea","Montipora","Millepora","Leptastrea","Pocillopora","Porites","Pavona"))
 predictions$conf.high[predictions$predicted<10e-5]=0 #when probability is 0, upper CI is at 1, so removed it
 
-#####
-width_bars=0.8
-plot_list_model_genus=list()
-for (genus in levels(predictions$Genus)){
-  predictions_sub=predictions[predictions$Genus==genus,]
-  plot=predictions_sub %>% 
-          ggplot(aes(x = Depth, y = predicted,color=Depth)) +   
-            geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width=0.15, size = 0.5,position=position_dodge(width_bars),alpha=0.9,show.legend=F) +
-            geom_bar(aes(fill=Depth),alpha=0.3,position=position_dodge(width_bars),stat="identity",width=width_bars,color=NA)+
-            scale_color_manual(values = rev(c("#09283CFF", "mediumpurple2","skyblue1"))) +
-            scale_fill_manual(values = rev(c("#09283CFF", "mediumpurple2","skyblue1")))+
-            #scale_color_manual(values = c("skyblue1", "#259FAF", "#044553")) +
-            #scale_fill_manual(values = c("skyblue1", "#259FAF", "#044553")) +
-            theme_classic()+
-            scale_y_continuous(expand=c(0,0),limits=c(0,1.01))+
-            scale_x_discrete(expand=c(0.2,0.2))+
-            labs(y="Probability of bleaching",title="")+
-            theme(axis.title.x=element_blank(),
-                  legend.position="none",
-                  plot.title=element_text(face="italic",size=10,hjust=-0.03))+
-    theme(axis.title.y=element_text(size=7),axis.text.x=element_text(size=7),axis.text.y=element_text(size=6)) #to add for plotting in 1 row + plot.title size = 12
-  
-  plot_list_model_genus=append(plot_list_model_genus,list(plot))
-
-}
-
-
-
-ggarrange(plotlist=plot_list_model_genus,labels=c("Acropora","Phymastrea","Montipora","Millepora","Leptastrea","Pocillopora","Porites","Pavona"),align="hv",ncol=4,nrow=2,font.label=list(size=9,face="italic"),hjust=-0.2) #LETTERS[1:length(unique(predictions$Genus))]
-ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Bleaching/Binomial/Predictions_genus_fixed_arranged_pale_as_healthyv2.pdf",width =7, height = 3.5)
-```
-
-```{r Good version plot - barplot predictions}
 predictions$depth=factor(predictions$Depth,levels=rev(c("5m","12m","20m")))
 bleaching_proportion$Depth=factor(bleaching_proportion$depth,levels=rev(c("5m","12m","20m")))
 
@@ -2285,227 +1975,13 @@ ggplot() +
     legend.justification = "center",
     plot.margin = margin(5, 15, 5, 5)
   ) 
-ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Bleaching/Binomial/Predictions_genus_fixed_arranged_pale_as_bleached_barplotv4.pdf",width =5, height = 5)
+ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Bleaching/Binomial/Predictions_genus_fixed_arranged_pale_as_bleached_barplot_goodonev2.pdf",width =4.3, height = 5.5)
 ```
 
-```{r Plot contrasts model -  differences by genra}
-emm=emmeans(mod_bleaching2,pairwise~genus|depth,type="response",adjust="tukey",bias.adjust=T,sigma=total_sd)
-matrix_contrasts_all=pwpm(regrid(emm,bias.adjust=T,sigma=total_sd), by = c("depth"), means = FALSE,adjust="tukey",bias.adjust=T,sigma=total_sd) #regrid(emm,bias.adjust=T,sigma=total_sd)
-
-depths=c("5m", "12m", "20m")
-genus_list=c("Pocillopora","Montipora","Acropora","Phymastrea","Pavona","Porites","Leptastrea","Millepora")
-
-
-plot_list=list()
-for (depth in depths) {
-    
-    combination_name=paste("depth =", depth)
-    matrix_contrasts=matrix_contrasts_all[[combination_name]]
-    matrix_contrasts=as.matrix(matrix_contrasts)
-
-
-   
-    matrix_contrasts=sub("[<>]", "", matrix_contrasts)
-    p.matx=matrix(as.numeric(matrix_contrasts), nrow = length(matrix_contrasts[, 1]), ncol = length(matrix_contrasts[, 1]))
-    rownames(p.matx)=colnames(p.matx)=colnames(matrix_contrasts)
-
-    differences=p.matx
-    differences[upper.tri(differences, diag = FALSE)]=NA
-    p.matx[lower.tri(p.matx, diag = FALSE)]=NA
-
-   
-    long_p_values=as.data.frame(p.matx, check.names = FALSE) %>%
-          rownames_to_column(var = "rowname") %>%
-          gather(rowname2, value, -rowname) %>%
-          na.omit()
-    colnames(long_p_values)=c("rowname2","rowname","value")
-    long_p_values=long_p_values%>%relocate(rowname)
-
-    long_differences=as.data.frame(differences, check.names = FALSE) %>%
-          rownames_to_column(var = "rowname") %>%
-          gather(rowname2, value, -rowname) %>%
-          na.omit()
-  
-    df_contrasts=merge(long_differences,long_p_values,by=c("rowname","rowname2"))
-  
-  colnames(df_contrasts)=c("Genus1","Genus2","Differences","p_values")
-  df_contrasts$Differences_signif=df_contrasts$Differences
-  df_contrasts$Differences_signif[df_contrasts$p_values>0.05]=0
-
-  
-  df_contrasts2=df_contrasts
-  colnames(df_contrasts2)=c("Genus2","Genus1","Differences","p_values","Differences_signif")
-  df_contrasts2=df_contrasts2%>%relocate(Genus1)
-  df_contrasts$is_upper=TRUE
-  df_contrasts$is_diag=FALSE
-  df_contrasts2$is_upper=FALSE
-  df_contrasts2$is_diag=FALSE
-  combined=rbind(df_contrasts,df_contrasts2)
-  
-   
-    diag_data <-data.frame(Genus1=genus_list,Genus2=genus_list,Differences=NA,p_values=NA,Differences_signif=NA,is_upper=FALSE,is_diag=TRUE)
-
-  combined=rbind(combined, diag_data)
-  
- 
-  combined$Genus1=factor(combined$Genus1,levels=genus_list)
-  combined$Genus2=factor(combined$Genus2,levels=genus_list)
-  combined$p_values_text=combined$p_values
-  #combined=combined%>%mutate(p_values_text = ifelse(p_values_text > 0.0001, round(p_values_text, 4), "< 1e-4"))
-  #combined$Differences=-1*combined$Differences #comme ça différence de axe y - axe x
-  #combined$Differences_signif=-1*combined$Differences_signif #comme ça différence de axe y - axe x
-  
-  plot=combined %>%
-    mutate(is_upper = as.numeric(Genus2) < as.numeric(Genus1)) %>%
-    mutate(is_diag = as.numeric(Genus2) == as.numeric(Genus1)) %>%
-    ggplot(aes(Genus1, Genus2)) +
-    geom_tile(aes(fill = ifelse(is_upper, 0, Differences_signif)), colour = NA) +
-    geom_tile(aes(alpha = ifelse(is_diag, 1, 0)), fill ="#DEDEDE") +
-    geom_tile(aes(alpha = ifelse(is_upper, 1, 0)), fill = "white",color=NA) +
-    geom_text(aes(label = ifelse(is_upper, p_values_text, round(Differences,2)),fontface = ifelse(p_values<0.05, 2, 1)),size=3) +
-    scale_fill_gradient2(name = "Differences", low = "darkmagenta", mid = "white", high = "darkorange", midpoint = 0, limits = c(-1, 1)) +
-    scale_alpha_identity() +
-    coord_equal(expand = FALSE)+
-    labs(x = "",y = "",title=" ") +
-    theme_bw() +
-    theme(panel.border = element_rect(size = 1),
-    plot.title = element_text(face = "italic",size=10), legend.direction="horizontal", legend.position="bottom",
-    axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.5),                       
-    axis.text.x.bottom = element_text(size=12),axis.text.y = element_text(size=12))#+theme(plot.margin = unit(c(0,0,0,0), "lines"))
-
-    plot_list=append(plot_list, list(plot))
-  }
-
-arranged_dead=ggarrange(plotlist=plot_list,labels=paste0(LETTERS[1:12]," - ",depths),ncol=3,nrow=1,common.legend=T,legend="none",font.label=list(size=14),hjust=-0.2)
-annotation_dead=ggplot() +
-  annotate(
-    "text",
-    label = "B L E A C H I N G",
-    x = 0.5,
-    y = 0.5,
-    size = 7,
-    fontface = "bold",color="white",
-    hjust = 0.5,
-    vjust = 0.5,angle=90) +
-  theme_void() +
-  theme(
-    plot.background = element_rect(fill = "tan",color=NA),axis.line.x = element_blank(),axis.line.y = element_blank()
-  )
-
-arranged_dead=ggarrange(annotation_dead,arranged_dead,widths=c(0.02,0.98))
-ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Bleaching/Binomial/Emmeans_contrats_bleaching_tukey_differences_genus.pdf",width = 16, height = 5)
-```
-
-```{r Plot contrasts model -  differences by genra - averaged depth}
-emm=emmeans(mod_bleaching2,pairwise~genus,type="response",adjust="fdr",bias.adjust=T,sigma=total_sd)
-matrix_contrasts_all=pwpm(regrid(emm,bias.adjust=T,sigma=total_sd), means = FALSE,adjust="fdr",bias.adjust=T,sigma=total_sd) #regrid(emm,bias.adjust=T,sigma=total_sd)
-
-depths=c("5m", "12m", "20m")
-
-genus_list=rev(c("Acropora","Leptastrea","Millepora","Montipora","Pavona","Phymastrea","Pocillopora","Porites"))
-
-
-
-    
-    matrix_contrasts=matrix_contrasts_all
-    matrix_contrasts=as.matrix(matrix_contrasts)
-
-
-   
-    matrix_contrasts=sub("[<>]", "", matrix_contrasts)
-    p.matx=matrix(as.numeric(matrix_contrasts), nrow = length(matrix_contrasts[, 1]), ncol = length(matrix_contrasts[, 1]))
-    rownames(p.matx)=colnames(p.matx)=colnames(matrix_contrasts)
-
-    differences=p.matx
-    differences[upper.tri(differences, diag = FALSE)]=NA
-    p.matx[lower.tri(p.matx, diag = FALSE)]=NA
-
-   
-    long_p_values=as.data.frame(p.matx, check.names = FALSE) %>%
-          rownames_to_column(var = "rowname") %>%
-          gather(rowname2, value, -rowname) %>%
-          na.omit()
-    colnames(long_p_values)=c("rowname2","rowname","value")
-    long_p_values=long_p_values%>%relocate(rowname)
-
-    long_differences=as.data.frame(differences, check.names = FALSE) %>%
-          rownames_to_column(var = "rowname") %>%
-          gather(rowname2, value, -rowname) %>%
-          na.omit()
-  
-    df_contrasts=merge(long_differences,long_p_values,by=c("rowname","rowname2"))
-  
-  colnames(df_contrasts)=c("Genus1","Genus2","Differences","p_values")
-  df_contrasts$Differences_signif=df_contrasts$Differences
-  df_contrasts$Differences_signif[df_contrasts$p_values>0.05]=0
-
-  
-  df_contrasts2=df_contrasts
-  colnames(df_contrasts2)=c("Genus2","Genus1","Differences","p_values","Differences_signif")
-  df_contrasts2=df_contrasts2%>%relocate(Genus1)
-  df_contrasts$is_upper=TRUE
-  df_contrasts$is_diag=FALSE
-  df_contrasts2$is_upper=FALSE
-  df_contrasts2$is_diag=FALSE
-  combined=rbind(df_contrasts,df_contrasts2)
-  
-   
-    diag_data <-data.frame(Genus1=genus_list,Genus2=genus_list,Differences=NA,p_values=NA,Differences_signif=NA,is_upper=FALSE,is_diag=TRUE)
-
-  combined=rbind(combined, diag_data)
-  
- 
-  combined$Genus1=factor(combined$Genus1,levels=genus_list)
-  combined$Genus2=factor(combined$Genus2,levels=genus_list)
-  combined$p_values_text=combined$p_values
-  #combined=combined%>%mutate(p_values_text = ifelse(p_values_text > 0.0001, round(p_values_text, 4), "< 1e-4"))
-  #combined$Differences=-1*combined$Differences #comme ça différence de axe y - axe x
-  #combined$Differences_signif=-1*combined$Differences_signif #comme ça différence de axe y - axe x
-  
-  plot_genus_ave_depth=combined %>%
-    mutate(is_upper = as.numeric(Genus2) < as.numeric(Genus1)) %>%
-    mutate(is_diag = as.numeric(Genus2) == as.numeric(Genus1)) %>%
-    ggplot(aes(Genus1, Genus2)) +
-    geom_tile(aes(fill = ifelse(is_upper, 0, Differences_signif)), colour = NA) +
-    geom_tile(aes(alpha = ifelse(is_diag, 1, 0)), fill ="#DEDEDE") +
-    geom_tile(aes(alpha = ifelse(is_upper, 1, 0)), fill = "white",color=NA) +
-    #geom_text(aes(label = ifelse(is_upper, p_values_text, round(Differences,2)),fontface = ifelse(p_values<0.05, 2, 1)),size=3) +
-      # Text for upper triangle (p-values), small text
-    geom_text(data = ~ .x %>% filter(is_upper), aes(label = p_values_text, fontface = ifelse(p_values_text < 0.05, 2, 1)),size = 2.6)+
-  # Text for lower triangle (Differences), larger text
-    geom_text(data = ~ .x %>% filter(!is_upper & !is_diag),aes(label = round(Differences, 2),fontface = ifelse(p_values_text < 0.05, 2, 1)),size = 3) +
-    scale_fill_gradient2(name = "Differences", low = "darkmagenta", mid = "white", high = "darkorange", midpoint = 0, limits = c(-1, 1)) +
-    scale_alpha_identity() +
-    coord_equal(expand = FALSE)+
-    labs(x = "",y = "",title=" ") +
-    theme_bw() +
-    theme(panel.border = element_rect(size = 1),
-    plot.title = element_text(face = "italic",size=10), legend.direction="horizontal", legend.position="none",
-    axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.5),                       
-    axis.text.x.bottom = element_text(size=12),axis.text.y = element_text(size=12))#+theme(plot.margin = unit(c(0,0,0,0), "lines"))
-
-annotation_dead=ggplot() +
-  annotate(
-    "text",
-    label = "B L E A C H I N G",
-    x = 0.5,
-    y = 0.5,
-    size = 7,
-    fontface = "bold",color="white",
-    hjust = 0.5,
-    vjust = 0.5,angle=90) +
-  theme_void() +
-  theme(
-    plot.background = element_rect(fill = "tan",color=NA),axis.line.x = element_blank(),axis.line.y = element_blank()
-  )
-
-arranged_dead=ggarrange(annotation_dead,plot_genus_ave_depth,widths=c(0.06,0.94))
-ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Bleaching/Binomial/Emmeans_contrats_bleaching_tukey_differences_genus_averaged_depth.pdf",width = 5, height = 4.9)
-```
-
-```{r Plot contrasts model - differences by depth}
+```{r Plot contrasts model - differences by depth and taxa}
 emm=emmeans(mod_bleaching2,pairwise~depth|genus,type="response",adjust="tukey",bias.adjust=T,sigma=total_sd)
 matrix_contrasts_all=pwpm(regrid(emm,bias.adjust=T,sigma=total_sd), by = c("genus"), means = FALSE,adjust="tukey",bias.adjust=T,sigma=total_sd) #regrid(emm,bias.adjust=T,sigma=total_sd)
+matrix_contrasts_all_pval=pwpm(emm, by = c("genus"), means = FALSE,adjust="tukey",bias.adjust=T,sigma=total_sd) #regrid(emm,bias.adjust=T,sigma=total_sd)
 
 depths=c("5m", "12m", "20m")
 genus_list=c("Acropora","Phymastrea","Montipora","Millepora","Leptastrea","Pocillopora","Porites","Pavona")
@@ -2513,13 +1989,15 @@ genus_list=c("Acropora","Phymastrea","Montipora","Millepora","Leptastrea","Pocil
 
 plot_list=list()
 for (genus in genus_list) {
-    
     combination_name=paste("genus =", genus)
     matrix_contrasts=matrix_contrasts_all[[combination_name]]
     matrix_contrasts=as.matrix(matrix_contrasts)
+    
+    matrix_contrasts_pval=matrix_contrasts_all_pval[[combination_name]]
+    matrix_contrasts_pval=as.matrix(matrix_contrasts_pval)
 
 
-   
+    #For differences
     matrix_contrasts=sub("[<>]", "", matrix_contrasts)
     p.matx=matrix(as.numeric(matrix_contrasts), nrow = length(matrix_contrasts[, 1]), ncol = length(matrix_contrasts[, 1]))
     rownames(p.matx)=colnames(p.matx)=colnames(matrix_contrasts)
@@ -2528,19 +2006,28 @@ for (genus in genus_list) {
     differences[upper.tri(differences, diag = FALSE)]=NA
     p.matx[lower.tri(p.matx, diag = FALSE)]=NA
 
-   
-    long_p_values=as.data.frame(p.matx, check.names = FALSE) %>%
+    long_differences=as.data.frame(differences, check.names = FALSE) %>%
+          rownames_to_column(var = "rowname") %>%
+          gather(rowname2, value, -rowname) %>%
+          na.omit()
+    
+    
+    #For p-values
+    matrix_contrasts=sub("[<>]", "", matrix_contrasts_pval)
+    p.matx_pval=matrix(as.numeric(matrix_contrasts), nrow = length(matrix_contrasts[, 1]), ncol = length(matrix_contrasts[, 1]))
+    rownames(p.matx_pval)=colnames(p.matx_pval)=colnames(matrix_contrasts)
+
+
+    p.matx_pval[lower.tri(p.matx_pval, diag = FALSE)]=NA
+
+
+    long_p_values=as.data.frame(p.matx_pval, check.names = FALSE) %>%
           rownames_to_column(var = "rowname") %>%
           gather(rowname2, value, -rowname) %>%
           na.omit()
     colnames(long_p_values)=c("rowname2","rowname","value")
     long_p_values=long_p_values%>%relocate(rowname)
 
-    long_differences=as.data.frame(differences, check.names = FALSE) %>%
-          rownames_to_column(var = "rowname") %>%
-          gather(rowname2, value, -rowname) %>%
-          na.omit()
-  
     df_contrasts=merge(long_differences,long_p_values,by=c("rowname","rowname2"))
   
   colnames(df_contrasts)=c("Depth1","Depth2","Differences","p_values")
@@ -2556,8 +2043,7 @@ for (genus in genus_list) {
   df_contrasts2$is_upper=FALSE
   df_contrasts2$is_diag=FALSE
   combined=rbind(df_contrasts,df_contrasts2)
-  
-   
+
     diag_data <-data.frame(Depth1=depths,Depth2=depths,Differences=NA,p_values=NA,Differences_signif=NA,is_upper=FALSE,is_diag=TRUE)
 
   combined=rbind(combined, diag_data)
@@ -2578,10 +2064,10 @@ for (genus in genus_list) {
     geom_tile(aes(alpha = ifelse(is_diag, 1, 0)), fill ="#DEDEDE") +
     geom_tile(aes(alpha = ifelse(is_upper, 1, 0)), fill = "white",color=NA) +
     #geom_text(aes(label = ifelse(is_upper, p_values_text, round(Differences,2)),fontface = ifelse(p_values<0.05, 2, 1)),size=3.5) +
-      # Text for upper triangle (p-values), small text
-    geom_text(data = ~ .x %>% filter(is_upper), aes(label = p_values_text, fontface = ifelse(p_values_text < 0.05, 2, 1)),size = 2.9)+
-  # Text for lower triangle (Differences), larger text
-    geom_text(data = ~ .x %>% filter(!is_upper & !is_diag),aes(label = round(Differences, 2),fontface = ifelse(p_values_text < 0.05, 2, 1)),size = 3.4) +
+   
+    geom_text(data = ~ .x %>% filter(is_upper), aes(label = p_values_text, fontface = ifelse(p_values_text < 0.05, 2, 1)),size = 3.2)+ #3
+
+    geom_text(data = ~ .x %>% filter(!is_upper & !is_diag),aes(label = round(Differences, 2),fontface = ifelse(p_values_text < 0.05, 2, 1)),size = 3.6) + #3.6
     scale_fill_gradient2(name = "Differences", low = "darkmagenta", mid = "white", high = "darkorange", midpoint = 0, limits = c(-0.3, 0.3)) +
     scale_alpha_identity() +
     coord_equal(expand = FALSE)+
@@ -2595,27 +2081,121 @@ for (genus in genus_list) {
     plot_list=append(plot_list, list(plot))
 }
 
-arranged_dead=ggarrange(plotlist=plot_list,labels=genus_list,ncol=4,nrow=2,common.legend=T,legend="none",font.label=list(size=14,face="italic"),hjust=-0.2) #paste0(LETTERS[1:12]," - ",genus_list)
-ggarrange(NULL,ggarrange(NULL,arranged_dead,nrow=2,heights=c(0.02,0.98)),plot_genus_ave_depth,labels=c("A","","B"),widths=c(0.02,0.65,0.33),ncol=3)
-ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Bleaching/Binomial/Emmeans_contrats_bleaching_arranged.pdf",width = 14, height = 4.7)
+#ggarrange(plotlist=plot_list,labels=genus_list,ncol=4,nrow=2,common.legend=T,legend="none",font.label=list(size=14,face="italic"),hjust=-0.2)
+#ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Bleaching/Binomial/Emmeans_contrats_bleaching_tukey_differences_depth.pdf",width = 10, height = 5.5)
+#ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Bleaching/Binomial/Emmeans_contrats_bleaching_tukey_differences_depth_goodone.pdf",width = 9, height = 4.5)
 
-annotation_dead=ggplot() +
-  annotate(
-    "text",
-    label = "B L E A C H I N G",
-    x = 0.5,
-    y = 0.5,
-    size = 7,
-    fontface = "bold",color="white",
-    hjust = 0.5,
-    vjust = 0.5,angle=90) +
-  theme_void() +
-  theme(
-    plot.background = element_rect(fill = "tan",color=NA),axis.line.x = element_blank(),axis.line.y = element_blank()
-  )
 
-arranged_dead=ggarrange(annotation_dead,arranged_dead,widths=c(0.03,0.97))
-ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Bleaching/Binomial/Emmeans_contrats_bleaching_tukey_differences_depth.pdf",width = 10, height = 5.5)
+ggarrange(plotlist=plot_list,labels=genus_list,ncol=2,nrow=4,common.legend=T,legend="none",font.label=list(size=14,face="italic"),hjust=-0.2)
+ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Bleaching/Binomial/Emmeans_contrats_bleaching_tukey_differences_depth_goodone_vertical.pdf",width = 4.5, height = 9)
+```
+
+```{r Plot contrasts model -  differences by genra - averaged depth}
+emm=emmeans(mod_bleaching2,pairwise~genus,type="response",adjust="fdr",bias.adjust=T,sigma=total_sd)
+matrix_contrasts_all=pwpm(regrid(emm,bias.adjust=T,sigma=total_sd), means = FALSE,adjust="fdr",bias.adjust=T,sigma=total_sd) #regrid(emm,bias.adjust=T,sigma=total_sd)
+matrix_contrasts_all_pval=pwpm(emm, means = FALSE,adjust="fdr",bias.adjust=T,sigma=total_sd) #regrid(emm,bias.adjust=T,sigma=total_sd)
+
+depths=c("5m", "12m", "20m")
+
+genus_list=rev(c("Acropora","Leptastrea","Millepora","Montipora","Pavona","Phymastrea","Pocillopora","Porites"))
+
+
+    matrix_contrasts=matrix_contrasts_all
+    matrix_contrasts=as.matrix(matrix_contrasts)
+    
+    matrix_contrasts_pval=matrix_contrasts_all_pval
+    matrix_contrasts_pval=as.matrix(matrix_contrasts_pval)
+
+
+
+    matrix_contrasts=sub("[<>]", "", matrix_contrasts)
+    p.matx=matrix(as.numeric(matrix_contrasts), nrow = length(matrix_contrasts[, 1]), ncol = length(matrix_contrasts[, 1]))
+    rownames(p.matx)=colnames(p.matx)=colnames(matrix_contrasts)
+
+    differences=p.matx
+    differences[upper.tri(differences, diag = FALSE)]=NA
+    p.matx[lower.tri(p.matx, diag = FALSE)]=NA
+
+    long_differences=as.data.frame(differences, check.names = FALSE) %>%
+          rownames_to_column(var = "rowname") %>%
+          gather(rowname2, value, -rowname) %>%
+          na.omit()
+    
+    
+    #For p-values
+    matrix_contrasts=sub("[<>]", "", matrix_contrasts_pval)
+    p.matx_pval=matrix(as.numeric(matrix_contrasts), nrow = length(matrix_contrasts[, 1]), ncol = length(matrix_contrasts[, 1]))
+    rownames(p.matx_pval)=colnames(p.matx_pval)=colnames(matrix_contrasts)
+
+
+    p.matx_pval[lower.tri(p.matx_pval, diag = FALSE)]=NA
+
+
+    long_p_values=as.data.frame(p.matx_pval, check.names = FALSE) %>%
+          rownames_to_column(var = "rowname") %>%
+          gather(rowname2, value, -rowname) %>%
+          na.omit()
+    colnames(long_p_values)=c("rowname2","rowname","value")
+    long_p_values=long_p_values%>%relocate(rowname)
+
+  
+    df_contrasts=merge(long_differences,long_p_values,by=c("rowname","rowname2"))
+  
+  colnames(df_contrasts)=c("Genus1","Genus2","Differences","p_values")
+  df_contrasts$Differences_signif=df_contrasts$Differences
+  df_contrasts$Differences_signif[df_contrasts$p_values>0.05]=0
+
+  
+  df_contrasts2=df_contrasts
+  colnames(df_contrasts2)=c("Genus2","Genus1","Differences","p_values","Differences_signif")
+  df_contrasts2=df_contrasts2%>%relocate(Genus1)
+  df_contrasts$is_upper=TRUE
+  df_contrasts$is_diag=FALSE
+  df_contrasts2$is_upper=FALSE
+  df_contrasts2$is_diag=FALSE
+  combined=rbind(df_contrasts,df_contrasts2)
+  
+
+    diag_data <-data.frame(Genus1=genus_list,Genus2=genus_list,Differences=NA,p_values=NA,Differences_signif=NA,is_upper=FALSE,is_diag=TRUE)
+
+  combined=rbind(combined, diag_data)
+  
+ 
+  combined$Genus1=factor(combined$Genus1,levels=genus_list)
+  combined$Genus2=factor(combined$Genus2,levels=genus_list)
+  combined$p_values_text=combined$p_values
+  #combined=combined%>%mutate(p_values_text = ifelse(p_values_text > 0.0001, round(p_values_text, 4), "< 1e-4"))
+  #combined$Differences=-1*combined$Differences #comme ça différence de axe y - axe x
+  #combined$Differences_signif=-1*combined$Differences_signif #comme ça différence de axe y - axe x
+  
+  plot_genus_ave_depth=combined %>%
+    mutate(is_upper = as.numeric(Genus2) < as.numeric(Genus1)) %>%
+    mutate(is_diag = as.numeric(Genus2) == as.numeric(Genus1)) %>%
+    ggplot(aes(Genus1, Genus2)) +
+    geom_tile(aes(fill = ifelse(is_upper, 0, Differences_signif)), colour = NA) +
+    geom_tile(aes(alpha = ifelse(is_diag, 1, 0)), fill ="#DEDEDE") +
+    geom_tile(aes(alpha = ifelse(is_upper, 1, 0)), fill = "white",color=NA) +
+    #geom_text(aes(label = ifelse(is_upper, p_values_text, round(Differences,2)),fontface = ifelse(p_values<0.05, 2, 1)),size=3) +
+
+    geom_text(data = ~ .x %>% filter(is_upper), aes(label = p_values_text, fontface = ifelse(p_values_text < 0.05, 2, 1)),size = 3.5)+
+ 
+    geom_text(data = ~ .x %>% filter(!is_upper & !is_diag),aes(label = round(Differences, 2),fontface = ifelse(p_values_text < 0.05, 2, 1)),size = 3.9) +
+    scale_fill_gradient2(name = "Differences", low = "darkmagenta", mid = "white", high = "darkorange", midpoint = 0, limits = c(-1, 1)) +
+    scale_alpha_identity() +
+    coord_equal(expand = FALSE)+
+    labs(x = "",y = "",title=" ") +
+    theme_bw() +
+    theme(panel.border = element_rect(size = 1),
+    plot.title = element_text(face = "italic",size=10), legend.direction="horizontal", legend.position="none",
+    axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.5),                       
+    axis.text.x.bottom = element_text(size=12),axis.text.y = element_text(size=12))#+theme(plot.margin = unit(c(0,0,0,0), "lines"))
+plot_genus_ave_depth
+
+
+plot_genus_ave_depth
+#ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Bleaching/Binomial/Emmeans_contrats_bleaching_tukey_differences_genus_averaged_depth_goodone.pdf",width = 5, height = 4.9)
+
+ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Bleaching/Binomial/Emmeans_contrats_bleaching_tukey_differences_genus_averaged_depth_goodone.pdf",width = 5.7, height = 5.7)
 ```
 
 
@@ -2784,32 +2364,10 @@ ggplot(mortality_depth_site, aes(x = Depth, y = percent, fill = Group_name)) +
 ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Mortality/Proportion_bysite_depth.pdf",width = 9, height = 3)
 ```
 
-### % mortality
-```{r}
-mortality_summary=mortality_coral %>%
-  group_by(Depth) %>%
-  summarise(
-    total_points_corals = sum(n_point_sp),
-    dead_points_corals = sum(n_point_sp[State == "Dead"]),  #dead points
-    living_points = sum(n_point_sp[State=="Living"]),  #living points
-    mortality_percent = (dead_points_corals / total_points_corals) * 100  #% mortality
-  ) %>%
-  ungroup()
-
-
-mortality_summary_genus=mortality_coral %>%
-  group_by(Depth,Genus) %>%
-  summarise(
-    total_points_corals = sum(n_point_sp),
-    dead_points_corals = sum(n_point_sp[State == "Dead"]),  #dead points
-    living_points = sum(n_point_sp[State=="Living"]),  #living points
-    mortality_percent = (dead_points_corals / total_points_corals) * 100  #% mortality
-  ) %>%
-  ungroup()
-
-```
 
 ##Loss of coral cover
+
+### Assemblage
 ```{r Mean cover loss}
 mean_cover_loss_sites=cover_summary_complete %>%
   group_by(Site, Depth, Time) %>%
@@ -2882,64 +2440,151 @@ contrasts$z.ratio=round(contrasts$z.ratio,2)
 #Predictions
 predictions=ggeffects::ggemmeans(mod_cover_loss_relative, terms = c("Depth"))
 colnames(predictions)[1]="Depth"
-predictions$Depth=factor(predictions$Depth,levels=c("5m","12m","20m"))
-
-
-ggplot(predictions, aes(x = Depth)) +
-  geom_errorbar(
-    aes(ymin = -conf.low * 100, ymax = -conf.high * 100, color = Depth),
-    width = 0.15, size = 0.5,
-    position = position_dodge(width = 0.7),alpha=0.9,
-    show.legend = FALSE
-  ) +
-  geom_bar(
-    aes(y = -predicted * 100, fill = Depth),
-    stat = "identity",
-    position = position_dodge(width = 0.7),
-    width = 0.7, color = NA,alpha=0.3
-  ) +
-  scale_color_manual(values = rev(c("black", "#8A2BE2", "#0096C7"))) +
-  scale_fill_manual(values = rev(c("#09283CFF", "mediumpurple1", "skyblue1"))) +
-  theme_classic() +
-  scale_y_continuous(expand = c(0, 0), limits = c(-51,0), breaks = seq(-60, 0, by = 10)) +
-  scale_x_discrete(expand = c(0.2, 0.2),position="top") +
-  labs(y = "Change in coral cover (%)") +
-  guides(fill="none",color="none")+
-  theme(axis.text.x=element_text(size=9),
-    axis.title.x = element_blank(),
-    legend.position = c(0.2,0.95),
-    plot.title = element_text(face = "italic", size = 12, hjust = -0.03),
-    legend.title = element_blank(),
-    legend.text = element_text(size = 7, margin = margin(t = 0, unit = "lines")),
-    legend.background = element_blank(),
-    legend.key.size = unit(0.3, "cm"),
-    legend.spacing.y = unit(0, "pt"),
-    legend.margin = margin(0, 0, 0, 0)
-  )
-
-ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Mortality/Model/Cover loss/Predictions_relative_cover_loss.pdf",width =3, height = 2.5)
-
-
-#####
-predictions$depth=factor(predictions$Depth,levels=c("5m","12m","20m"),labels=c("5","12","20"))
-cover_final$depth=factor(cover_final$depth,levels=c("20","12","5"))
+predictions$depth=factor(predictions$Depth,levels=rev(c("5m","12m","20m")))
+predictions$Genus="Assemblage"
 
 ggplot() +
-  geom_jitter(data = cover_final,aes(y = depth, x = Cover_loss_relative, color=depth),size = 1, alpha = 0.07, height = 0.2) +
-  geom_errorbar(data = predictions,aes(y = depth, x = predicted, xmin = conf.low, xmax = conf.high,color=depth),size = 0.7,show.legend =FALSE,width=0.2) +
-  geom_col(data = predictions,aes(y = depth, x = predicted, fill = depth),width = 0.7,color = NA,alpha=0.2) +
+  geom_errorbar(data = predictions,aes(y = depth, x = predicted, xmin = conf.low, xmax = conf.high,color=depth),size = 0.5,show.legend =FALSE,width=0.25) +
+  geom_col(data = predictions,aes(y = depth, x = predicted, fill = depth),color = NA,alpha=0.2)+#,width=0.84) +
+  #scale_color_manual(values = rev(c("skyblue1", "#259FAF", "#044553"))) +
+  #scale_fill_manual(values = rev(c("skyblue1", "#259FAF", "#044553"))) +
    scale_color_manual(values = c("#09283CFF", "mediumpurple2","skyblue1")) +
-   scale_fill_manual(values = rev(c("#09283CFF", "mediumpurple2","skyblue1")))+
+   scale_fill_manual(values = c("#09283CFF", "mediumpurple2","skyblue1"))+
   theme_classic() +
-  scale_x_continuous(expand = c(0, 0), limits = c(0,1.02),position="top",breaks=seq(0,1,by=0.25)) +
-  labs(x = "Relative coral cover loss", y = "Depth (m)") +
-  theme(axis.title.x = element_text(size = 9),
-    axis.title.y = element_text(size = 9,angle=90),
-    legend.position = "none", axis.text=element_text(size=8)
-  )
-ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Mortality/Model/Cover loss/Predictions_relative_cover_loss_v2.pdf",width =3.5, height = 2) 
+  scale_x_continuous(expand = c(0.001, 0.001), limits = c(0, 1),position="top") +
+  #scale_y_reverse(breaks = c(2,5, 12, 20), limits = c(22, 2),expand=c(0,0)) +  # ← profondeur inversée
+  labs(x = "Relative coral cover loss", y = "") +
+  facet_grid(rows = vars(factor(Genus)), switch = "y") +
+  scale_y_discrete(expand = c(0, 0)) +
+  #scale_y_discrete(expand = c(0.22, 0.22)) +
+  theme_bw() +
+  theme(
+    strip.background = element_blank(),
+    strip.placement = "outside",
+    strip.text.y.left = element_text( size = 9, angle = 0, hjust = 1,face="italic"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_rect(color = "grey30", size = 0.7),
+    axis.ticks = element_line(size=0.4),
+    axis.text.x = element_text(size = 8),
+    axis.text.y = element_text(size = 8),
+    axis.title.x = element_text(size=9),
+    legend.position = "none",
+    legend.title = element_blank(),
+    legend.text = element_text(size = 8, margin = margin(t = 0,l=0.2, unit = "lines")), #l=0.2 space between key and legend
+    legend.key.size = unit(0.3, "cm"),
+    legend.spacing.y = unit(10, "pt"),
+    legend.spacing.x= unit(2,"cm"),
+    legend.margin = margin(0, 0, 0, 0),
+    legend.direction = "horizontal",
+    legend.justification = "center",
+    plot.margin = margin(5, 15, 5, 5)
+  ) 
+ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Mortality/Model/Cover loss/Predictions_relative_cover_loss_goodone_ASSEMBLAGE.pdf",width =4.3, height = 1)
 ```
 
+```{r Plot contrasts model - assemblage - differences by depth}
+emm=emmeans(mod_cover_loss_relative,pairwise~Depth,type="response",adjust="tukey",bias.adjust=T,sigma=total_sd)
+matrix_contrasts_all=pwpm(regrid(emm,bias.adjust=T,sigma=total_sd), means = FALSE,adjust="tukey",bias.adjust=T,sigma=total_sd) #regrid(emm,bias.adjust=T,sigma=total_sd)
+matrix_contrasts_all_pval=pwpm(emm, means = FALSE,adjust="tukey",bias.adjust=T,sigma=total_sd) #regrid(emm,bias.adjust=T,sigma=total_sd)
+
+depths=c("5m", "12m", "20m")
+
+
+    matrix_contrasts=matrix_contrasts_all
+    matrix_contrasts=as.matrix(matrix_contrasts)
+    
+    matrix_contrasts_pval=matrix_contrasts_all_pval
+    matrix_contrasts_pval=as.matrix(matrix_contrasts_pval)
+
+
+    #For differences
+    matrix_contrasts=sub("[<>]", "", matrix_contrasts)
+    p.matx=matrix(as.numeric(matrix_contrasts), nrow = length(matrix_contrasts[, 1]), ncol = length(matrix_contrasts[, 1]))
+    rownames(p.matx)=colnames(p.matx)=colnames(matrix_contrasts)
+
+    differences=p.matx
+    differences[upper.tri(differences, diag = FALSE)]=NA
+    p.matx[lower.tri(p.matx, diag = FALSE)]=NA
+
+    long_differences=as.data.frame(differences, check.names = FALSE) %>%
+          rownames_to_column(var = "rowname") %>%
+          gather(rowname2, value, -rowname) %>%
+          na.omit()
+    
+    
+    #For p-values
+    matrix_contrasts=sub("[<>]", "", matrix_contrasts_pval)
+    p.matx_pval=matrix(as.numeric(matrix_contrasts), nrow = length(matrix_contrasts[, 1]), ncol = length(matrix_contrasts[, 1]))
+    rownames(p.matx_pval)=colnames(p.matx_pval)=colnames(matrix_contrasts)
+
+
+    p.matx_pval[lower.tri(p.matx_pval, diag = FALSE)]=NA
+
+  
+    long_p_values=as.data.frame(p.matx_pval, check.names = FALSE) %>%
+          rownames_to_column(var = "rowname") %>%
+          gather(rowname2, value, -rowname) %>%
+          na.omit()
+    colnames(long_p_values)=c("rowname2","rowname","value")
+    long_p_values=long_p_values%>%relocate(rowname)
+
+    df_contrasts=merge(long_differences,long_p_values,by=c("rowname","rowname2"))
+  
+  colnames(df_contrasts)=c("Depth1","Depth2","Differences","p_values")
+  df_contrasts$Differences_signif=df_contrasts$Differences
+  df_contrasts$Differences_signif[df_contrasts$p_values>0.05]=0
+
+  
+  df_contrasts2=df_contrasts
+  colnames(df_contrasts2)=c("Depth2","Depth1","Differences","p_values","Differences_signif")
+  df_contrasts2=df_contrasts2%>%relocate(Depth1)
+  df_contrasts$is_upper=TRUE
+  df_contrasts$is_diag=FALSE
+  df_contrasts2$is_upper=FALSE
+  df_contrasts2$is_diag=FALSE
+  combined=rbind(df_contrasts,df_contrasts2)
+  
+
+    diag_data <-data.frame(Depth1=depths,Depth2=depths,Differences=NA,p_values=NA,Differences_signif=NA,is_upper=FALSE,is_diag=TRUE)
+
+  combined=rbind(combined, diag_data)
+  
+ 
+  combined$Depth1=factor(combined$Depth1,levels=c("20m","12m","5m"))
+  combined$Depth2=factor(combined$Depth2,levels=c("20m","12m","5m"))
+  combined$p_values_text=combined$p_values
+  #combined=combined%>%mutate(p_values_text = ifelse(p_values_text > 0.0001, round(p_values_text, 4), "< 1e-4"))
+  #combined$Differences=-1*combined$Differences #comme ça différence de axe y - axe x
+  #combined$Differences_signif=-1*combined$Differences_signif #comme ça différence de axe y - axe x
+  
+plot=combined %>%
+    mutate(is_upper = as.numeric(Depth2) < as.numeric(Depth1)) %>%
+    mutate(is_diag = as.numeric(Depth2) == as.numeric(Depth1)) %>%
+    ggplot(aes(Depth1, Depth2)) +
+    geom_tile(aes(fill = ifelse(is_upper, 0, Differences_signif)), colour = NA) +
+    geom_tile(aes(alpha = ifelse(is_diag, 1, 0)), fill ="#DEDEDE") +
+    geom_tile(aes(alpha = ifelse(is_upper, 1, 0)), fill = "white",color=NA) +
+   
+    geom_text(data = ~ .x %>% filter(is_upper), aes(label = p_values_text, fontface = ifelse(p_values_text < 0.05, 2, 1)),size = 3.2)+ #3
+
+    geom_text(data = ~ .x %>% filter(!is_upper & !is_diag),aes(label = round(Differences, 2),fontface = ifelse(p_values_text < 0.05, 2, 1)),size = 3.6) + #3.6
+    scale_fill_gradient2(name = "Differences", low = "darkmagenta", mid = "white", high = "darkorange", midpoint = 0, limits = c(-0.3, 0.3)) +
+    scale_alpha_identity() +
+    coord_equal(expand = FALSE)+
+    labs(x = "",y = "",title=" ") +
+    theme_bw() +
+    theme(panel.border = element_rect(size = 1),
+    plot.title = element_text(face = "italic",size=10), legend.direction="horizontal", legend.position="none",
+    axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.5),                       
+    axis.text.x.bottom = element_text(size=12),axis.text.y = element_text(size=12))#+theme(plot.margin = unit(c(0,0,0,0), "lines"))
+plot
+
+ggarrange(plot,labels="Assemblage",ncol=1,nrow=1,common.legend=T,legend="none",font.label=list(size=14,face="italic"),hjust=-0.2)
+#ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Mortality/Model/Cover loss/Emmeans_contrats_cover_loss_goodone_ASSEMBLAGE.pdf",width = 2.25, height = 2.25)
+```
+
+### By genus
 ```{r Model on coral cover loss - relative to prior coral cover - by genus}
 cover_final_genus$Cover_loss_relative[cover_final_genus$Cover_loss_relative==0]=0.000001
 cover_final_genus$Cover_loss_relative[cover_final_genus$Cover_loss_relative==1]=0.999999
@@ -2956,7 +2601,7 @@ summary(mod_cover_loss_relative_genus)
 
 Anova(mod_cover_loss_relative_genus)
 r2(mod_cover_loss_relative_genus)
-total_sd=sqrt(0.2658^2)
+total_sd=sqrt(0.2754^2)
 emm=emmeans(mod_cover_loss_relative_genus,pairwise~Depth|Species,adjust="tukey",type="response",bias.adjust=T,sigma=total_sd)
 regrid(emm)
 pairs(regrid(emm,type="response"),type="response",adjust="tukey")
@@ -2970,92 +2615,7 @@ predictions=ggeffects::ggemmeans(mod_cover_loss_relative_genus, terms = c("Depth
 colnames(predictions)[1]="Depth"
 predictions$Depth=factor(predictions$Depth,levels=c("5m","12m","20m"))
 colnames(predictions)[6]="Genus"
-#####
-plot_list_model_genus=list()
-for (genus in levels(predictions$Genus)){
-  predictions_sub=predictions[predictions$Genus==genus,]
-  plot=predictions_sub %>% 
-          ggplot(aes(x = Depth)) +
-  geom_errorbar(
-    aes(ymin = -conf.low * 100, ymax = -conf.high * 100, color = Depth),
-    width = 0.15, size = 0.5,
-    position = position_dodge(width = 0.7),alpha=0.9,
-    show.legend = FALSE
-  ) +
-  geom_bar(
-    aes(y = -predicted * 100, fill = Depth),
-    stat = "identity",
-    position = position_dodge(width = 0.7),
-    width = 0.7, color = NA,alpha=0.3
-  ) +
-  scale_color_manual(values = rev(c("black", "#8A2BE2", "#0096C7"))) +
-  scale_fill_manual(values = rev(c("#09283CFF", "mediumpurple1", "skyblue1"))) +
-  theme_classic() +
-  scale_y_continuous(expand = c(0, 0), limits = c(-105,0), breaks = seq(-100, 0, by = 20)) +
-  scale_x_discrete(expand = c(0.2, 0.2),position="top") +
-  labs(y = "Change in coral cover (%)",title=genus) +
-  guides(fill="none",color="none")+
-  theme(axis.text.x=element_text(size=9),
-         axis.title.y=element_text(size=9),
-        axis.text.y=element_text(size=8),
-    axis.title.x = element_blank(),
-    legend.position = c(0.2,0.95),
-    plot.title = element_text(face = "italic", size = 11, hjust = -0.03),
-    legend.title = element_blank(),
-    legend.text = element_text(size = 7, margin = margin(t = 0, unit = "lines")),
-    legend.background = element_blank(),
-    legend.key.size = unit(0.3, "cm"),
-    legend.spacing.y = unit(0, "pt"),
-    legend.margin = margin(10, 10, 10, 10)
-  )
-  plot_list_model_genus=append(plot_list_model_genus,list(plot))
 
-}
-
-ggarrange(plotlist=plot_list_model_genus,labels=LETTERS[1:length(unique(predictions$Genus))],align="hv",ncol=3)
-#ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Mortality/Model/Cover loss/Predictions_relative_cover_loss_by_genus.pdf",width =6.5, height = 2.5)
-
-#####
-predictions$depth=factor(predictions$Depth,levels=c("5m","12m","20m"),labels=c("5","12","20"))
-predictions$depth=factor(predictions$depth,levels=c("20","12","5"))
-cover_final_genus$depth=factor(cover_final_genus$Depth,levels=c("5m","12m","20m"),labels=c("5","12","20"))
-cover_final_genus$depth=factor(cover_final_genus$depth,levels=c("20","12","5"))
-
-plot_list_model_genus=list()
-for (genus in levels(predictions$Genus)){
-  predictions_sub=predictions[predictions$Genus==genus,]
-  cover_final_genus_sub=cover_final_genus[cover_final_genus$Species==genus,]
-
-plot=ggplot() +
-  geom_jitter(data = cover_final_genus_sub,aes(y = depth, x = Cover_loss_relative, color=depth),size = 1, alpha = 0.1, height = 0.2) +
-  geom_errorbar(data = predictions_sub,aes(y = depth, x = predicted, xmin = conf.low, xmax = conf.high,color=depth),size = 0.7,show.legend =FALSE,width=0.2) +
-  #geom_point(data = predictions_sub,aes(x = Depth, y = predicted, color = Depth),shape = 21, fill = "white", stroke = 2, size = 2) +
-  geom_col(data = predictions_sub,aes(y = depth, x = predicted, fill = depth),stat="identity",width = 0.7,color = NA,alpha=0.2) +
-  #scale_color_manual(values = rev(c("skyblue1", "#259FAF", "#044553"))) +
-  #scale_fill_manual(values = rev(c("skyblue1", "#259FAF", "#044553"))) +
-   scale_color_manual(values = c("#09283CFF", "mediumpurple2","skyblue1")) +
-   scale_fill_manual(values = c("#09283CFF", "mediumpurple2","skyblue1"))+
-  theme_classic() +
-  scale_x_continuous(expand = c(0, 0), limits = c(0, 1.02),position="top") +
-  #scale_y_reverse(breaks = c(2,5, 12, 20), limits = c(22, 2),expand=c(0,0)) +  # ← profondeur inversée
-  labs(x = "Relative coral cover loss", y = "Depth (m)",title=genus) +
-  theme(axis.title.x = element_text(size = 9),
-    axis.title.y = element_text(size = 9),
-    legend.position = "none", axis.text=element_text(size=8),
-    plot.margin = margin(0, 10, 10, 10),
-  plot.title = element_textbox_simple(size = 11,face="italic",
-      color = "seashell4", fill = "seashell2",box.color = NA,
-      halign = 0.05, linetype = 1, width = unit(1.33, "npc"), valign=1.5,
-      #padding = margin(2, 0, 1, 0), margin = margin(3, 3, 5, 3),
-      padding = margin(2, 0, 1, 0),  margin = margin(0, 0, 8, 0))
-  )
-plot_list_model_genus=append(plot_list_model_genus,list(plot))
-}
-ggarrange(plotlist=plot_list_model_genus,align="hv",ncol=2,nrow=1)#,labels=levels(predictions$Genus),font.label = list(face="bold.italic",size=10),hjust=-0.2)
-ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Mortality/Model/Cover loss/Predictions_relative_cover_loss_by_genusv3.pdf",width =6, height = 2)
-```
-
-```{r Good version plot}
 predictions$depth=factor(predictions$Depth,levels=rev(c("5m","12m","20m")))
 bleaching_proportion$Depth=factor(bleaching_proportion$depth,levels=rev(c("5m","12m","20m")))
 
@@ -3095,26 +2655,30 @@ predictions_mortality=ggplot() +
     plot.margin = margin(5, 15, 5, 5)
   ) 
 predictions_mortality
-ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Mortality/Model/Cover loss/Predictions_relative_cover_loss_by_genusv4.pdf",width =5, height = 1.4)
+ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Mortality/Model/Cover loss/Predictions_relative_cover_loss_by_genus_goodone.pdf",width =4.3, height = 1.4)
 ```
 
-```{r Plot contrasts model -  differences by genra}
-emm=emmeans(mod_cover_loss_relative_genus,pairwise~Species|Depth,type="response",adjust="tukey",bias.adjust=T,sigma=total_sd)
-matrix_contrasts_all=pwpm(regrid(emm,bias.adjust=T,sigma=total_sd), by = c("Depth"), means = FALSE,adjust="tukey",bias.adjust=T,sigma=total_sd) #regrid(emm,bias.adjust=T,sigma=total_sd)
+```{r Plot contrasts model - differences by depth - p-values not regrid}
+emm=emmeans(mod_cover_loss_relative_genus,pairwise~Depth|Species,type="response",adjust="tukey",bias.adjust=T,sigma=total_sd)
+matrix_contrasts_all=pwpm(regrid(emm,bias.adjust=T,sigma=total_sd), by = c("Species"), means = FALSE,adjust="tukey",bias.adjust=T,sigma=total_sd) #regrid(emm,bias.adjust=T,sigma=total_sd)
+matrix_contrasts_all_pval=pwpm(emm, by = c("Species"), means = FALSE,adjust="tukey",bias.adjust=T,sigma=total_sd) #regrid(emm,bias.adjust=T,sigma=total_sd)
 
 depths=c("5m", "12m", "20m")
-genus_list=c("Pocillopora","Montipora","Acropora")
+genus_list=c("Acropora","Pocillopora")
 
 
 plot_list=list()
-for (depth in depths) {
-    
-    combination_name=paste("Depth =", depth)
+for (genus in genus_list) {
+
+    combination_name=paste("Species =", genus)
     matrix_contrasts=matrix_contrasts_all[[combination_name]]
     matrix_contrasts=as.matrix(matrix_contrasts)
+    
+    matrix_contrasts_pval=matrix_contrasts_all_pval[[combination_name]]
+    matrix_contrasts_pval=as.matrix(matrix_contrasts_pval)
 
 
-   
+    #For differences
     matrix_contrasts=sub("[<>]", "", matrix_contrasts)
     p.matx=matrix(as.numeric(matrix_contrasts), nrow = length(matrix_contrasts[, 1]), ncol = length(matrix_contrasts[, 1]))
     rownames(p.matx)=colnames(p.matx)=colnames(matrix_contrasts)
@@ -3123,57 +2687,70 @@ for (depth in depths) {
     differences[upper.tri(differences, diag = FALSE)]=NA
     p.matx[lower.tri(p.matx, diag = FALSE)]=NA
 
+    long_differences=as.data.frame(differences, check.names = FALSE) %>%
+          rownames_to_column(var = "rowname") %>%
+          gather(rowname2, value, -rowname) %>%
+          na.omit()
+    
+    
+    #For p-values
+    matrix_contrasts=sub("[<>]", "", matrix_contrasts_pval)
+    p.matx_pval=matrix(as.numeric(matrix_contrasts), nrow = length(matrix_contrasts[, 1]), ncol = length(matrix_contrasts[, 1]))
+    rownames(p.matx_pval)=colnames(p.matx_pval)=colnames(matrix_contrasts)
+
+
+    p.matx_pval[lower.tri(p.matx_pval, diag = FALSE)]=NA
+
    
-    long_p_values=as.data.frame(p.matx, check.names = FALSE) %>%
+    long_p_values=as.data.frame(p.matx_pval, check.names = FALSE) %>%
           rownames_to_column(var = "rowname") %>%
           gather(rowname2, value, -rowname) %>%
           na.omit()
     colnames(long_p_values)=c("rowname2","rowname","value")
     long_p_values=long_p_values%>%relocate(rowname)
 
-    long_differences=as.data.frame(differences, check.names = FALSE) %>%
-          rownames_to_column(var = "rowname") %>%
-          gather(rowname2, value, -rowname) %>%
-          na.omit()
-  
     df_contrasts=merge(long_differences,long_p_values,by=c("rowname","rowname2"))
   
-  colnames(df_contrasts)=c("Genus1","Genus2","Differences","p_values")
+  colnames(df_contrasts)=c("Depth1","Depth2","Differences","p_values")
   df_contrasts$Differences_signif=df_contrasts$Differences
   df_contrasts$Differences_signif[df_contrasts$p_values>0.05]=0
 
   
   df_contrasts2=df_contrasts
-  colnames(df_contrasts2)=c("Genus2","Genus1","Differences","p_values","Differences_signif")
-  df_contrasts2=df_contrasts2%>%relocate(Genus1)
+  colnames(df_contrasts2)=c("Depth2","Depth1","Differences","p_values","Differences_signif")
+  df_contrasts2=df_contrasts2%>%relocate(Depth1)
   df_contrasts$is_upper=TRUE
   df_contrasts$is_diag=FALSE
   df_contrasts2$is_upper=FALSE
   df_contrasts2$is_diag=FALSE
   combined=rbind(df_contrasts,df_contrasts2)
   
-   
-    diag_data <-data.frame(Genus1=genus_list,Genus2=genus_list,Differences=NA,p_values=NA,Differences_signif=NA,is_upper=FALSE,is_diag=TRUE)
+    # Ajouter la diagonale
+    diag_data <-data.frame(Depth1=depths,Depth2=depths,Differences=NA,p_values=NA,Differences_signif=NA,is_upper=FALSE,is_diag=TRUE)
 
   combined=rbind(combined, diag_data)
   
  
-  combined$Genus1=factor(combined$Genus1,levels=genus_list)
-  combined$Genus2=factor(combined$Genus2,levels=genus_list)
+  combined$Depth1=factor(combined$Depth1,levels=c("20m","12m","5m"))
+  combined$Depth2=factor(combined$Depth2,levels=c("20m","12m","5m"))
   combined$p_values_text=combined$p_values
-  combined=combined%>%mutate(p_values_text = ifelse(p_values_text > 0.0001, round(p_values_text, 4), "< 1e-4"))
+  #combined=combined%>%mutate(p_values_text = ifelse(p_values_text > 0.0001, round(p_values_text, 4), "< 1e-4"))
   #combined$Differences=-1*combined$Differences #comme ça différence de axe y - axe x
   #combined$Differences_signif=-1*combined$Differences_signif #comme ça différence de axe y - axe x
   
   plot=combined %>%
-    mutate(is_upper = as.numeric(Genus2) < as.numeric(Genus1)) %>%
-    mutate(is_diag = as.numeric(Genus2) == as.numeric(Genus1)) %>%
-    ggplot(aes(Genus1, Genus2)) +
+    mutate(is_upper = as.numeric(Depth2) < as.numeric(Depth1)) %>%
+    mutate(is_diag = as.numeric(Depth2) == as.numeric(Depth1)) %>%
+    ggplot(aes(Depth1, Depth2)) +
     geom_tile(aes(fill = ifelse(is_upper, 0, Differences_signif)), colour = NA) +
     geom_tile(aes(alpha = ifelse(is_diag, 1, 0)), fill ="#DEDEDE") +
     geom_tile(aes(alpha = ifelse(is_upper, 1, 0)), fill = "white",color=NA) +
-    geom_text(aes(label = ifelse(is_upper, p_values_text, round(Differences,2)),fontface = ifelse(p_values<0.05, 2, 1)),size=4) +
-    scale_fill_gradient2(name = "Differences", low = "darkmagenta", mid = "white", high = "darkorange", midpoint = 0, limits = c(-0.8, 0.8)) +
+    #geom_text(aes(label = ifelse(is_upper, p_values_text, round(Differences,2)),fontface = ifelse(p_values<0.05, 2, 1)),size=3.5) +
+
+    geom_text(data = ~ .x %>% filter(is_upper), aes(label = p_values_text, fontface = ifelse(p_values_text < 0.05, 2, 1)),size = 3.2)+ #3
+
+    geom_text(data = ~ .x %>% filter(!is_upper & !is_diag),aes(label = round(Differences, 2),fontface = ifelse(p_values_text < 0.05, 2, 1)),size = 3.6) + #3.6
+    scale_fill_gradient2(name = "Differences", low = "darkmagenta", mid = "white", high = "darkorange", midpoint = 0, limits = c(-0.46, 0.47)) +
     scale_alpha_identity() +
     coord_equal(expand = FALSE)+
     labs(x = "",y = "",title=" ") +
@@ -3184,251 +2761,11 @@ for (depth in depths) {
     axis.text.x.bottom = element_text(size=12),axis.text.y = element_text(size=12))#+theme(plot.margin = unit(c(0,0,0,0), "lines"))
 
     plot_list=append(plot_list, list(plot))
-  }
-
-arranged_dead=ggarrange(plotlist=plot_list,labels=paste0(LETTERS[1:12]," - ",depths),ncol=3,nrow=1,common.legend=T,legend="none",font.label=list(size=14),hjust=-0.2)
-annotation_dead=ggplot() +
-  annotate(
-    "text",
-    label = "D E A D",
-    x = 0.5,
-    y = 0.5,
-    size = 7,
-    fontface = "bold",color="white",
-    hjust = 0.5,
-    vjust = 0.5,angle=90) +
-  theme_void() +
-  theme(
-    plot.background = element_rect(fill = "darkkhaki",color=NA),axis.line.x = element_blank(),axis.line.y = element_blank()
-  )
-
-arranged_dead=ggarrange(annotation_dead,arranged_dead,widths=c(0.04,0.96))
-ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Mortality/Model/Cover loss/Emmeans_contrats_dead_tukey_differences_genus.pdf",width = 9, height = 3.1)
-```
-
-```{r Plot contrasts model - differences by depth}
-emm=emmeans(mod_cover_loss_relative_genus,pairwise~Depth|Species,type="response",adjust="tukey",bias.adjust=T,sigma=total_sd)
-matrix_contrasts_all=pwpm(regrid(emm,bias.adjust=T,sigma=total_sd), by = c("Species"), means = FALSE,adjust="tukey",bias.adjust=T,sigma=total_sd) #regrid(emm,bias.adjust=T,sigma=total_sd)
-
-depths=c("5m", "12m", "20m")
-genus_list=c("Acropora","Pocillopora")
+}
 
 
-plot_list=list()
-for (genus in genus_list) {
-    
-    combination_name=paste("Species =", genus)
-    matrix_contrasts=matrix_contrasts_all[[combination_name]]
-    matrix_contrasts=as.matrix(matrix_contrasts)
-
-
-   
-    matrix_contrasts=sub("[<>]", "", matrix_contrasts)
-    p.matx=matrix(as.numeric(matrix_contrasts), nrow = length(matrix_contrasts[, 1]), ncol = length(matrix_contrasts[, 1]))
-    rownames(p.matx)=colnames(p.matx)=colnames(matrix_contrasts)
-
-    differences=p.matx
-    differences[upper.tri(differences, diag = FALSE)]=NA
-    p.matx[lower.tri(p.matx, diag = FALSE)]=NA
-
-   
-    long_p_values=as.data.frame(p.matx, check.names = FALSE) %>%
-          rownames_to_column(var = "rowname") %>%
-          gather(rowname2, value, -rowname) %>%
-          na.omit()
-    colnames(long_p_values)=c("rowname2","rowname","value")
-    long_p_values=long_p_values%>%relocate(rowname)
-
-    long_differences=as.data.frame(differences, check.names = FALSE) %>%
-          rownames_to_column(var = "rowname") %>%
-          gather(rowname2, value, -rowname) %>%
-          na.omit()
-  
-    df_contrasts=merge(long_differences,long_p_values,by=c("rowname","rowname2"))
-  
-  colnames(df_contrasts)=c("Depth1","Depth2","Differences","p_values")
-  df_contrasts$Differences_signif=df_contrasts$Differences
-  df_contrasts$Differences_signif[df_contrasts$p_values>0.05]=0
-
-  
-  df_contrasts2=df_contrasts
-  colnames(df_contrasts2)=c("Depth2","Depth1","Differences","p_values","Differences_signif")
-  df_contrasts2=df_contrasts2%>%relocate(Depth1)
-  df_contrasts$is_upper=TRUE
-  df_contrasts$is_diag=FALSE
-  df_contrasts2$is_upper=FALSE
-  df_contrasts2$is_diag=FALSE
-  combined=rbind(df_contrasts,df_contrasts2)
-  
-   
-    diag_data <-data.frame(Depth1=depths,Depth2=depths,Differences=NA,p_values=NA,Differences_signif=NA,is_upper=FALSE,is_diag=TRUE)
-
-  combined=rbind(combined, diag_data)
-  
- 
-  combined$Depth1=factor(combined$Depth1,levels=c("20m","12m","5m"))
-  combined$Depth2=factor(combined$Depth2,levels=c("20m","12m","5m"))
-  combined$p_values_text=combined$p_values
-  combined=combined%>%mutate(p_values_text = ifelse(p_values_text > 0.0001, round(p_values_text, 4), "< 1e-4"))
-  #combined$Differences=-1*combined$Differences #comme ça différence de axe y - axe x
-  #combined$Differences_signif=-1*combined$Differences_signif #comme ça différence de axe y - axe x
-  
-  plot=combined %>%
-    mutate(is_upper = as.numeric(Depth2) < as.numeric(Depth1)) %>%
-    mutate(is_diag = as.numeric(Depth2) == as.numeric(Depth1)) %>%
-    ggplot(aes(Depth1, Depth2)) +
-    geom_tile(aes(fill = ifelse(is_upper, 0, Differences_signif)), colour = NA) +
-    geom_tile(aes(alpha = ifelse(is_diag, 1, 0)), fill ="#DEDEDE") +
-    geom_tile(aes(alpha = ifelse(is_upper, 1, 0)), fill = "white",color=NA) +
-    geom_text(aes(label = ifelse(is_upper, p_values_text, round(Differences,2)),fontface = ifelse(p_values<0.05, 2, 1)),size=4) +
-    scale_fill_gradient2(name = "Differences", low = "darkmagenta", mid = "white", high = "darkorange", midpoint = 0, limits = c(-0.5, 0.5)) +
-    scale_alpha_identity() +
-    coord_equal(expand = FALSE)+
-    labs(x = "",y = "",title=" ") +
-    theme_bw() +
-    theme(panel.border = element_rect(size = 1),
-    plot.title = element_text(face = "italic",size=10), legend.direction="horizontal", legend.position="bottom",
-    axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.5),                       
-    axis.text.x.bottom = element_text(size=13),axis.text.y = element_text(size=13))#+theme(plot.margin = unit(c(0,0,0,0), "lines"))
-
-    plot_list=append(plot_list, list(plot))
-  }
-
-arranged_dead=ggarrange(plotlist=plot_list,labels=genus_list,ncol=2,nrow=1,common.legend=T,legend="none",font.label=list(size=14,face="italic"),hjust=-0.2)
-ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Mortality/Model/Cover loss/Emmeans_contrats_dead_tukey_differences_good_one.pdf",width = 6, height = 2.7)
-
-
-
-predictions_mortality=ggplot() +
-  geom_errorbar(data = predictions,aes(y = depth, x = predicted, xmin = conf.low, xmax = conf.high,color=depth),size = 0.5,show.legend =FALSE,width=0.25) +
-  geom_col(data = predictions,aes(y = depth, x = predicted, fill = depth),color = NA,alpha=0.2)+#,width=0.84) +
-  scale_color_manual(values = c("#09283CFF", "mediumpurple2","skyblue1")) +
-  scale_fill_manual(values = c("#09283CFF", "mediumpurple2","skyblue1"))+
-  theme_classic() +
-  scale_x_continuous(expand = c(0.0009, 0.0009), limits = c(0, 1),position="top") +
-  #scale_y_reverse(breaks = c(2,5, 12, 20), limits = c(22, 2),expand=c(0,0)) +  # ← profondeur inversée
-  labs(x = "Relative coral cover loss", y = "") +
-  facet_grid(rows = vars(factor(Genus)), switch = "y") +
-  scale_y_discrete(expand = c(0, 0)) +
-  #scale_y_discrete(expand = c(0.22, 0.22)) +
-  theme_bw() +
-  theme(
-    strip.background = element_blank(),
-    strip.placement = "outside",
-    strip.text.y.left = element_text( size = 12, angle = 0, hjust = 1,face="italic"),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    panel.border = element_rect(color = "grey30", size = 0.7),
-    axis.ticks = element_line(size=0.4),
-    axis.text.x = element_text(size = 10),
-    axis.text.y = element_text(size = 10),
-    axis.title.x = element_text(size=10),
-    legend.position = "none",
-    plot.margin = margin(5, 15, 5, 5)
-  ) 
-
-plot_list=list()
-for (genus in genus_list) {
-    
-    combination_name=paste("Species =", genus)
-    matrix_contrasts=matrix_contrasts_all[[combination_name]]
-    matrix_contrasts=as.matrix(matrix_contrasts)
-
-
-   
-    matrix_contrasts=sub("[<>]", "", matrix_contrasts)
-    p.matx=matrix(as.numeric(matrix_contrasts), nrow = length(matrix_contrasts[, 1]), ncol = length(matrix_contrasts[, 1]))
-    rownames(p.matx)=colnames(p.matx)=colnames(matrix_contrasts)
-
-    differences=p.matx
-    differences[upper.tri(differences, diag = FALSE)]=NA
-    p.matx[lower.tri(p.matx, diag = FALSE)]=NA
-
-   
-    long_p_values=as.data.frame(p.matx, check.names = FALSE) %>%
-          rownames_to_column(var = "rowname") %>%
-          gather(rowname2, value, -rowname) %>%
-          na.omit()
-    colnames(long_p_values)=c("rowname2","rowname","value")
-    long_p_values=long_p_values%>%relocate(rowname)
-
-    long_differences=as.data.frame(differences, check.names = FALSE) %>%
-          rownames_to_column(var = "rowname") %>%
-          gather(rowname2, value, -rowname) %>%
-          na.omit()
-  
-    df_contrasts=merge(long_differences,long_p_values,by=c("rowname","rowname2"))
-  
-  colnames(df_contrasts)=c("Depth1","Depth2","Differences","p_values")
-  df_contrasts$Differences_signif=df_contrasts$Differences
-  df_contrasts$Differences_signif[df_contrasts$p_values>0.05]=0
-
-  
-  df_contrasts2=df_contrasts
-  colnames(df_contrasts2)=c("Depth2","Depth1","Differences","p_values","Differences_signif")
-  df_contrasts2=df_contrasts2%>%relocate(Depth1)
-  df_contrasts$is_upper=TRUE
-  df_contrasts$is_diag=FALSE
-  df_contrasts2$is_upper=FALSE
-  df_contrasts2$is_diag=FALSE
-  combined=rbind(df_contrasts,df_contrasts2)
-  
-   
-    diag_data <-data.frame(Depth1=depths,Depth2=depths,Differences=NA,p_values=NA,Differences_signif=NA,is_upper=FALSE,is_diag=TRUE)
-
-  combined=rbind(combined, diag_data)
-  
- 
-  combined$Depth1=factor(combined$Depth1,levels=c("20m","12m","5m"))
-  combined$Depth2=factor(combined$Depth2,levels=c("20m","12m","5m"))
-  combined$p_values_text=combined$p_values
-  combined=combined%>%mutate(p_values_text = ifelse(p_values_text > 0.0001, round(p_values_text, 4), "< 1e-4"))
-  #combined$Differences=-1*combined$Differences #comme ça différence de axe y - axe x
-  #combined$Differences_signif=-1*combined$Differences_signif #comme ça différence de axe y - axe x
-  
-  plot=combined %>%
-    mutate(is_upper = as.numeric(Depth2) < as.numeric(Depth1)) %>%
-    mutate(is_diag = as.numeric(Depth2) == as.numeric(Depth1)) %>%
-    ggplot(aes(Depth1, Depth2)) +
-    geom_tile(aes(fill = ifelse(is_upper, 0, Differences_signif)), colour = NA) +
-    geom_tile(aes(alpha = ifelse(is_diag, 1, 0)), fill ="#DEDEDE") +
-    geom_tile(aes(alpha = ifelse(is_upper, 1, 0)), fill = "white",color=NA) +
-    geom_text(aes(label = ifelse(is_upper, p_values_text, round(Differences,2)),fontface = ifelse(p_values<0.05, 2, 1)),size=3) +
-    scale_fill_gradient2(name = "Differences", low = "darkmagenta", mid = "white", high = "darkorange", midpoint = 0, limits = c(-0.5, 0.5)) +
-    scale_alpha_identity() +
-    coord_equal(expand = FALSE)+
-    labs(x = "",y = "",title=" ") +
-    theme_bw() +
-    theme(panel.border = element_rect(size = 1),
-    plot.title = element_text(face = "italic",size=10), legend.direction="horizontal", legend.position="bottom",
-    axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.5),                       
-    axis.text.x.bottom = element_text(size=10),axis.text.y = element_text(size=10))#+theme(plot.margin = unit(c(0,0,0,0), "lines"))
-
-    plot_list=append(plot_list, list(plot))
-  }
-
-arranged_dead=ggarrange(plotlist=plot_list,labels=genus_list,ncol=2,nrow=1,common.legend=T,legend="none",font.label=list(size=12,face="italic"),hjust=-0.2)
-
-ggarrange(predictions_mortality,NULL,ggarrange(NULL,arranged_dead,ncol=2,widths=c(0.1,0.9)),labels=c("A","","B"),nrow=3,heights=c(0.5,0.05,0.7))
-ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Mortality/Model/Cover loss/Arranged_predictions_emmeanns.pdf",width = 5.5, height = 4)
-
-
-annotation_dead=ggplot() +
-  annotate(
-    "text",
-    label = "D E A D",
-    x = 0.5,
-    y = 0.5,
-    size = 7,
-    fontface = "bold",color="white",
-    hjust = 0.5,
-    vjust = 0.5,angle=90) +
-  theme_void() +
-  theme(
-    plot.background = element_rect(fill = "darkkhaki",color=NA),axis.line.x = element_blank(),axis.line.y = element_blank()
-  )
-
-arranged_dead=ggarrange(annotation_dead,arranged_dead,widths=c(0.04,0.96))
+ggarrange(plotlist=plot_list,labels=genus_list,ncol=2,nrow=1,common.legend=T,legend="none",font.label=list(size=14,face="italic"),hjust=-0.2)
+#ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Mortality/Model/Cover loss/Emmeans_contrats_genus_goodone.pdf",width = 4.5, height = 2.25)
 ```
 
 
@@ -3454,8 +2791,8 @@ assemblage=assemblage_bleaching_long%>%
 #Because there is just 1 Napoporas on the quadrats
 assemblage=assemblage%>%
   filter(
-    !(Site == "Gendron" & Depth == "20m" & Quadrat == 6),
-    !(Site == "Maatea"  & Depth == "20m" & Quadrat == 9)
+    !(Site == "Gendron" & Depth == "20m" & Quadrat == 329),
+    !(Site == "Maatea"  & Depth == "20m" & Quadrat == 184)
   )
 ```
 
@@ -3591,49 +2928,6 @@ mortality_coral_compo$Genus=factor(mortality_coral_compo$Genus,levels=c("Acropor
 #c("Pocillopora","Montipora","Acropora","Phymastrea","Pavona","Porites","Millepora","Leptastrea","Others")
 ```
 
-```{r Plot coral assemblages by depth and status}
-palette=c(
-  "#009392",  # teal (bleu-vert profond)
-  "#39B185",  # vert doux
-  "#9CCB86",  # vert amande
-  "#E9E29C",  # beige/jaune clair
-  "#F7C480",  # orangé sable
-  "#E88471",  # saumon
-  "#D65F5F",  # rouge clair brique
-  "#AD517F",  # rose-violet doux
-  "#6E4B7C"   # violet foncé/grisé
-)
-mortality_coral_compo$Genus=factor(mortality_coral_compo$Genus,levels=rev(c("Acropora","Pocillopora","Montipora","Porites","Pavona","Phymastrea","Leptastrea","Millepora","Others")))
-
-ggplot(mortality_coral_compo, aes(x = percent, y = fct_rev(Depth), fill = Genus)) +
-  geom_col(alpha=0.7) +
-  scale_fill_manual(name="Taxa",values=palette,drop=F,guide = guide_legend(reverse = TRUE))+
-  facet_grid(rows = vars(factor(State)), switch = "y") +
-  scale_x_continuous(expand = c(0, 0)) +#limits = c(0, 100)
-  scale_y_discrete(expand = c(0, 0)) +
-  coord_cartesian(clip = "off",xlim=c(0,100)) +  # ← autorise l’affichage en dehors du panel
-  theme_bw() +
-  theme(
-    strip.background = element_blank(),
-    strip.placement = "outside",
-    strip.text.y.left = element_text( size = 10, angle = 0, hjust = 1,margin = margin(0,10,0,0)),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    panel.border = element_rect(color = "black", size = 0.4),
-    axis.ticks = element_line(size=0.4),
-    axis.text.x = element_text(size = 8),
-    axis.text.y = element_text(size = 8),
-    axis.title.x = element_text(size=9),
-    legend.position = "right",
-    legend.text = element_text(size = 8,margin = margin(t = 0.2,l=0.25, unit = "lines")),
-    legend.background=element_blank(),legend.key.size = unit(0.35, "cm"),legend.spacing.y = unit(0, "pt"),
-    legend.margin = margin(0, 0, 0, 5),legend.title=element_text(size = 9),
-    legend.direction = "vertical",
-    legend.justification = "center"
-  ) +
-  labs(x = "Relative abundance (%)", y = "")
-ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Mortality/Coral assemblages/Alive_vs_dead_compositionv3.pdf",width =5, height = 1.9)
-```
 
 ```{r Arranged before/after/dead}
 palette=c(
@@ -3720,27 +3014,6 @@ hull_CC_NMDS$ID=factor(hull_CC_NMDS$ID,levels=c("Before_5m","After_5m","Before_1
 nmds_scores$ID=paste(nmds_scores$Bleaching,"_",hull_CC_NMDS$Depth,sep="")
 nmds_scores$ID=factor(nmds_scores$ID,levels=c("Before_5m","After_5m","Before_12m","After_12m","Before_20m","After_20m"))
 
-ggplot(nmds_scores, aes(x = NMDS1, y = NMDS2)) +
-  facet_wrap(~Depth,ncol=3)+
-  geom_polygon(data = hull_CC_NMDS, aes(x = NMDS1, y = NMDS2, fill = ID), alpha = 0.3, color = NA, show.legend = T) +
-  geom_point(aes(color=Depth),size = 1, alpha = 0.2) +
-  geom_segment(data = nmds_pairs,aes(x = NMDS1_Before, y = NMDS2_Before, xend = NMDS1_After, yend = NMDS2_After, color=Depth),arrow = arrow(length = unit(0.1, "cm")),size=0.3,inherit.aes = FALSE) +
-  theme_bw()+
-  scale_fill_manual(values=c("grey","skyblue1","grey", "mediumpurple1","grey","#09283CFF"))+
-  scale_color_manual(values=rev(c("#09283CFF", "mediumpurple1","skyblue1")))+
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-        legend.position="none",legend.direction="vertical",legend.background=element_blank(),
-        panel.border = element_rect(size = 1),
-        legend.title=element_text(size=9),legend.text = element_text(size = 7,margin = margin(t = 0, unit = "lines")),legend.key.size = unit(0.3, "cm"),legend.spacing.y = unit(0, "pt"),legend.margin = margin(0, 0, 0, 0), strip.text = element_textbox(
-      size = 12,
-      color = "seashell4", fill = "seashell2", box.color = NA,
-      halign = 0.5, linetype = 1, r = unit(5, "pt"), width = unit(1, "npc"),
-      padding = margin(2, 0, 1, 0), margin = margin(3, 3, 3, 3)
-    ),strip.background = element_blank())
-
-#ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Mortality/Coral assemblages/NMDS_k=2_before-after.pdf",width =8, height = 3.5)
-
-
 nmds_plot=ggplot(nmds_scores, aes(x = NMDS1, y = NMDS2)) +
   facet_wrap(~Depth,ncol=3)+
   geom_polygon(data = hull_CC_NMDS, aes(x = NMDS1, y = NMDS2, fill = ID), alpha = 0.2, color = NA, show.legend = T) +
@@ -3756,7 +3029,7 @@ nmds_plot=ggplot(nmds_scores, aes(x = NMDS1, y = NMDS2)) +
         axis.title=element_text(size=10,color="grey30"),axis.text=element_text(size=8))+
 theme(plot.margin=margin(10,10,10,10))
 nmds_plot
-ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Mortality/Coral assemblages/NMDS_k=2_before-afterv2.pdf",width =7, height = 2.7)
+#ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Mortality/Coral assemblages/NMDS_k=2_before-afterv2.pdf",width =7, height = 2.7)
 
 
 nmds_species=as.data.frame(scores(nmds)$species)
@@ -3767,11 +3040,10 @@ library(ggrepel)
 #Species
 # Calcule les vecteurs d'espèces corrélés aux axes nMDS
 fit=envfit(nmds, assemblage_compo, permutations = 999)
-plot(fit)
 
 corr_species=data.frame(fit$vectors$arrows,cbind(fit$vectors$r),cbind(fit$vectors$pvals))
 corr_species$Species=rownames(corr_species)
-writexl::write_xlsx(corr_species,"~/Documents/PhD/Bleaching 2019/Results/Moorea/Mortality/Coral assemblages/Envfit_correlation_species_nmds.xlsx")
+#writexl::write_xlsx(corr_species,"~/Documents/PhD/Bleaching 2019/Results/Moorea/Mortality/Coral assemblages/Envfit_correlation_species_nmds.xlsx")
 
 nmds_species2=as.data.frame(scores(fit, display = "vectors"))
 nmds_species2$Genus=rownames(nmds_species2)
@@ -3806,7 +3078,7 @@ theme(plot.margin=margin(10,10,10,10))+
   scale_y_continuous(limits=c(-0.15,0.5))+
   scale_x_continuous(limits=c(-1.05,0.25))+
   labs(y="NMDS2",x="NMDS1")
-ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Mortality/Coral assemblages/NMDS_env_fit_species.pdf",width =5, height = 3.5)
+#ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Mortality/Coral assemblages/NMDS_env_fit_species.pdf",width =5, height = 3.5)
 ```
 
 ```{r Shift in composition}
@@ -3833,8 +3105,8 @@ boxplot_shift=ggplot(nmds_pairs,aes(x=Depth,y=dist_change,color=Depth,fill=Depth
 boxplot_shift
 #ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Mortality/Coral assemblages/NMDS_shift_composition.pdf",width =4, height = 3.5)
 
-ggarrange(nmds_plot,boxplot_shift,ncol=2,widths=c(0.73,0.27),labels=c("A","B"),align="v")
-ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Mortality/Coral assemblages/nMDS_arranged.pdf",width =10, height = 3)
+ggarrange(nmds_plot,boxplot_shift,ncol=2,widths=c(0.7,0.3),labels=c("A","B"),align="v")
+ggsave("~/Documents/PhD/Bleaching 2019/Results/Moorea/Mortality/Coral assemblages/nMDS_arranged_goodone.pdf",width =9, height = 3)
 
 hist(nmds_pairs$dist_change)
 nmds_pairs$dist_change[nmds_pairs$dist_change==0]=0.0000001
@@ -3855,7 +3127,7 @@ contrasts=pairs(regrid(emm),adjust="tukey")
 contrasts
 
 contrasts=data.frame(contrasts)
-writexl::write_xlsx(contrasts,"~/Documents/PhD/Bleaching 2019/Results/Moorea/Mortality/Coral assemblages/Contrasts_shift_distance.xlsx")
+#writexl::write_xlsx(contrasts,"~/Documents/PhD/Bleaching 2019/Results/Moorea/Mortality/Coral assemblages/Contrasts_shift_distance.xlsx")
 ```
 
 ```{r PERMANOVA}
@@ -3897,7 +3169,7 @@ pairs_depth=pairs_adonis%>%
 
 
 
-# 7. MMA
+# 6. MMA
 ```{r df_relative : Relative abundance before bleaching}
 coral_before=coral_before%>%
   mutate(
